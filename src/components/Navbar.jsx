@@ -2,7 +2,7 @@ import { useState } from "react";
 import { assets } from "../assets/frontend_assets/assets";
 import { NavLink, Link } from "react-router-dom";
 
-function Navbar() {
+function NavBar() {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -120,4 +120,4 @@ function Navbar() {
     </div>
   );
 }
-export default Navbar;
+export default NavBar;
