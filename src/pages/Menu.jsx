@@ -10,7 +10,7 @@ const Menu = () => {
     const [showFilter, setShowFilter] = useState(false)
     const [filterProducts, setFilterProducts] = useState([])
     const [category, setCategory] = useState([])
-    const [sortType, setSortType] = useState('low-high')
+    const [sortType, setSortType] = useState('relavent')
 
     const toggleCategory = (e) => {
         if (category.includes(e.target.value)) {
@@ -43,11 +43,6 @@ const Menu = () => {
                 break;
         }
     }
-
-
-    useEffect(() => {
-        setFilterProducts(products)
-    },[])
 
     useEffect(() => {
         applyFilter()
@@ -86,6 +81,7 @@ const Menu = () => {
                 <Title text1={'TẤT CẢ'} text2={'SẢN PHẨM'} />
                 {/* product sort */}
                 <select onChange={(e) => setSortType(e.target.value)} className="border-2 border-gray-300 text-sm px-2">
+                    <option value="relavent">Liên quan nhất</option>
                     <option value="low-high">Giá từ thấp đến cao</option>
                     <option value="high-low">Giá từ cao đến thấp</option>
                 </select>
