@@ -10,7 +10,6 @@ const SearchBar = () => {
     const location = useLocation()
 
     useEffect(() => {
-        console.log(location.pathname);
         if (location.pathname.includes('menu')){
             setVisible(true)
         }
