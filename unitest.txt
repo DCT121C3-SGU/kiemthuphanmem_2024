@@ -1,0 +1,8 @@
+need fix:
+filter (drinks)
+change $ to vnđ
+
+
+test function:
+1. Add to cart: check sản phẩm nếu chưa chọn size sẽ báo lỗi
+2. Add to cart: check số lượng sản phẩm thêm vào giỏ 
