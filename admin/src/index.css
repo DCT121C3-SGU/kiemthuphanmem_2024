@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+*{
+    font-family: "Noto Serif", serif;
+}
+select,input,textarea{
+    border: 1px solid #c2c2c2;
+    outline-color: #c586a5;
+    border-radius: 4px;
+}
+.active {
+    background-color: #ffebf5;
+    border-color: #c586a5
+}
