@@ -1,11 +1,18 @@
 import { useContext, useState } from "react";
 import { assets } from "../assets/frontend_assets/assets";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 
 function NavBar() {
+  const navigate = useNavigate()
   const [visible, setVisible] = useState(false);
-  const { setShowSearch, getCartCount } = useContext(ShopContext);
+  const { setShowSearch, getCartCount, token, setToken, setCartItems } = useContext(ShopContext);
+  const logout = () => {
+    navigate('/login')
+    localStorage.removeItem("token")
+    setToken('')
+    setCartItems({})
+  }
 
   return (
     <div className="flex items-center justify-between py-5 font-medium">
@@ -44,20 +51,22 @@ function NavBar() {
           className="w-5 cursor-pointer"
         />
         <div className="group relative">
-          <Link to='/login'>
             <img
               src={assets.profile_icon}
               className="w-5 cursor-pointer"
               alt=""
+              onClick={() => token ? null : navigate('/login')}
             />
-          </Link>
-          <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
-            <div className="flex flex-col gap-2 w-36 px-3 py-5 bg-slate-100 text-gray-500 rounded">
+            {/* ----- dropdown menu ----- */}
+            {
+              token && <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
+                <div className="flex flex-col gap-2 w-36 px-3 py-5 bg-slate-100 text-gray-500 rounded">
               <p className="cursor-pointer hover:text-black">Hồ sơ của tôi</p>
-              <p className="cursor-pointer hover:text-black">Đơn hàng</p>
-              <p className="cursor-pointer hover:text-black">Đăng xuất</p>
-            </div>
-          </div>
+              <p onClick={() => navigate('/orders')} className="cursor-pointer hover:text-black">Đơn hàng</p>
+              <p onClick={logout} className="cursor-pointer hover:text-black">Đăng xuất</p>
+                </div>
+              </div>
+            }
         </div>
         <Link to="/card" className="relative">
           <img

@@ -17,9 +17,12 @@ const Add = ({token}) => {
   const [price,setPrice] = useState('')
   const [size,setSize] = useState([])
   const [bestseller,setBestseller] = useState(false)
+  const [isSubmit,setIsSubmit] = useState(false)
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
+    if (isSubmit) return
+    setIsSubmit(true)
     try {
       const formData = new FormData()
       image1 && formData.append('image1',image1)
@@ -44,6 +47,7 @@ const Add = ({token}) => {
         setImage2(false)
         setImage3(false)
         setImage4(false)
+        setIsSubmit(false)
       }
       else{
         toast.error(response.data.message)
@@ -141,7 +145,14 @@ const Add = ({token}) => {
         <input onChange={()=>setBestseller(prev => !prev)} checked={bestseller} className="cursor-pointer" type="checkbox" id="bestseller" />
         <label htmlFor="bestseller">Chuyển thành sản phẩm bán chạy</label>
       </div>
-      <button className="w-40 py-3 mt-4 bg-black text-white">Thêm sản phẩm</button>
+      <button
+        className={`w-40 py-3 mt-4 bg-black text-white ${
+          isSubmit ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={isSubmit}
+      >
+        {isSubmit ? "Đang thêm..." : "Thêm sản phẩm"}
+      </button>
     </form>
   );
 };
