@@ -1,5 +1,5 @@
 import express from "express";
-import { placeOrder, placeOrderMoMo, placeOrderVnpay, allOrders, userOrders, updateStatus } from "../controllers/orderController.js";
+import { placeOrder, placeOrderMoMo, allOrders, userOrders, updateStatus } from "../controllers/orderController.js";
 import adminAuth from "../middleware/adminAuth.js";
 import authUser from "../middleware/auth.js";
 
@@ -8,7 +8,6 @@ const orderRouter = express.Router();
 // Payment Feature
 orderRouter.post("/place", authUser, placeOrder);
 orderRouter.post("/momo", authUser, placeOrderMoMo);
-orderRouter.post("/vnpay", authUser, placeOrderVnpay);
 
 // Admin routes
 orderRouter.post("/list", adminAuth, allOrders);
