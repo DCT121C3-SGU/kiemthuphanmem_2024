@@ -11,10 +11,10 @@ orderRouter.post("/momo", authUser, placeOrderMoMo);
 orderRouter.post("/vnpay", authUser, placeOrderVnpay);
 
 // Admin routes
-orderRouter.get("/list", adminAuth, allOrders);
-orderRouter.post("/update-status", adminAuth, updateStatus);
+orderRouter.post("/list", adminAuth, allOrders);
+orderRouter.post("/status", adminAuth, updateStatus);
 
 // User routes
-orderRouter.get("/user-orders", authUser, userOrders);
+orderRouter.post("/user-orders", authUser, userOrders);
 
 export default orderRouter;

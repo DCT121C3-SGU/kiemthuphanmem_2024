@@ -4,10 +4,12 @@ import { assets } from "../assets/frontend_assets/assets";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 
 const PlaceOrder = () => {
-    const { backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_free, products }  = useContext(ShopContext)
+    const { backendURL, token, cartItems, setCartItems, getCartAmount, delivery_fee, products }  = useContext(ShopContext)
     const [method, setMethod] = useState('cod')
     const [formData, setFormData] = useState({
         firstName: '',
@@ -25,7 +27,7 @@ const PlaceOrder = () => {
       setFormData(data => ({...data, [name]: value}))
     }
     const navigate = useNavigate()
-    const submitHandler = (event) => {
+    const submitHandler = async(event) => {
         event.preventDefault()
         try {
           let orderItems = []
@@ -41,7 +43,26 @@ const PlaceOrder = () => {
               }
             }
           }
-          console.log(orderItems)
+          let orderData = {
+            address: formData,
+            items: orderItems,
+            amount: getCartAmount() + delivery_fee
+          }
+          switch (method) {
+            // API call for COD
+            case 'cod':
+              const response = await axios.post(backendURL + '/api/order/place', orderData, {headers:{token}})
+              if (response.data.success){
+                setCartItems({})
+                navigate('/orders')
+              } else {
+                toast.error(response.data.message)
+              }
+              break;
+
+            default:
+              break
+          }
         } catch (error) {
           
         }
