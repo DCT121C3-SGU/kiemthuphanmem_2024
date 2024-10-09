@@ -63,6 +63,7 @@ function NavBar() {
                 <div className="flex flex-col gap-2 w-36 px-3 py-5 bg-slate-100 text-gray-500 rounded">
               <p className="cursor-pointer hover:text-black">Hồ sơ của tôi</p>
               <p onClick={() => navigate('/orders')} className="cursor-pointer hover:text-black">Đơn hàng</p>
+              <p onClick={() => navigate('/')} className="cursor-pointer hover:text-black">Lịch sử đặt phòng</p>
               <p onClick={logout} className="cursor-pointer hover:text-black">Đăng xuất</p>
                 </div>
               </div>
