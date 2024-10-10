@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useContext } from 'react';
+import { ShopContext } from '../context/ShopContext';
+
 const Booking = () => {
+  const {backendURL} = useContext(ShopContext)
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -19,6 +24,8 @@ const Booking = () => {
   const onSubmitHandler = async(event) => {
     event.preventDefault();
     toast.success('Đặt phòng thành công');
+    const response = await axios.get(backendURL + "/api/room/list")
+    console.log(response)
   }
 
   return (
