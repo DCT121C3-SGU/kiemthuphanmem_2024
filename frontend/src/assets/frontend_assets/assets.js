@@ -75,6 +75,7 @@ import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
 import momo_icon from './momo_icon.png'
 import visa_icon from './visa_icon.png'
+import room_icon from './room.png'
 
 export const assets = {
     logo,
@@ -96,7 +97,8 @@ export const assets = {
     stripe_logo,
     cross_icon,
     momo_icon,
-    visa_icon
+    visa_icon,
+    room_icon
 }
 
 export const products = [

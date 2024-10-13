@@ -3,6 +3,7 @@ import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import validator from 'validator'
+import roomModel from '../models/roomModel.js'
 
 const createToken = (id) => {
     return jwt.sign({id},process.env.JWT_SECRET)
@@ -89,4 +90,46 @@ const adminLogin = async(req, res) => {
     }
 }
 
-export { loginUser, registerUser, adminLogin }
+const bookingRoom = async(req, res) => {
+    try {
+        const {userId, roomId, slotDate, slotTime} = req.body
+        const roomData = await roomModel.findById(roomId)
+        if (!roomData.room_status) {
+            return res.json({success:false, message:"Phòng không tồn tại"})
+        }
+        let room_booked = roomData.room_booked
+        if(room_booked[slotDate]){
+            if(room_booked[slotDate].includes(slotTime)) {
+                return res.json({success:false, message:"Phòng đã được đặt vào thời gian này"})
+            } else {
+                room_booked[slotDate].push(slotTime)
+            }
+        } else {
+            room_booked[slotDate] = []
+            room_booked[slotDate].push(slotTime)
+        }
+        const userData = await userModel.findById(userId)
+        delete roomData.room_booked
+        const bookingData = {
+            userId,
+            roomId,
+            userData,
+            roomData,
+            amount:roomData.room_price,
+            slotTime,
+            slotDate,
+            date: Date.now()
+        }
+        const newBooking = new bookingModel(bookingData)
+        await newBooking.save()
+
+        // save new slot data to room
+        await roomModel.findByIdAndUpdate(roomId, {room_booked})
+        res.json({success:true, message:"Đặt phòng thành công"})
+   } catch (error) {
+        console.log(error);
+        res.json({success:false, message:error.message})
+    }
+}
+
+export { loginUser, registerUser, adminLogin, bookingRoom }

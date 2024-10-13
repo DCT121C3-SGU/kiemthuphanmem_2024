@@ -11,6 +11,7 @@ import PlaceOrder from "./pages/PlaceOrder";
 import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import Booking from "./pages/Booking";
+import Room from "./pages/Room";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/product/:productId" element={<Product />} />
+          <Route path="/room/:roomId" element={<Room />} />
           <Route path="/card" element={<Card />} />
           <Route path="/place-order" element={<PlaceOrder />} />
           <Route path="/orders" element={<Orders />} />
