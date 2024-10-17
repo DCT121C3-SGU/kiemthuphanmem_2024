@@ -35,7 +35,7 @@ const placeOrderMoMo = async (req, res) => {
         const partnerCode = process.env.MOMO_PARTNER_CODE;
         const accessKey = process.env.MOMO_ACCESS_KEY;
         const secretKey = process.env.MOMO_SECRET_KEY;
-        const returnUrl = process.env.FRONTEND_URL + '/payment/momo/callback';
+        const returnUrl = process.env.FRONTEND_URL + '/';
         const notifyUrl = process.env.BACKEND_URL + '/api/payment/momo/ipn';
         const requestType = "captureWallet"
         const orderId = Date.now().toString();

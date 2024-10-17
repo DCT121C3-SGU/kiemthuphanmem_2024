@@ -76,4 +76,15 @@ const bookingRoom = async(req, res) => {
     }
 }
 
-export { listRoom, addRoom, bookingRoom }
+const listBooking = async(req,res) => {
+    try {
+        const {userId} = req.body
+        const bookingRoom =  await bookingModel.find({userId})
+        res.json({success:true, bookingRoom})
+    } catch (error) {
+        console.log(error);
+        res.json({success:false, message:error.message})  
+    }
+}
+
+export { listRoom, addRoom, bookingRoom, listBooking }

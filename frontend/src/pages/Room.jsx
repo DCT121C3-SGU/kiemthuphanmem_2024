@@ -92,7 +92,7 @@ const Room = () => {
       if (data.success) {
         toast.success(data.message)
         getRoomData()
-        navigate('/my-booking')
+        navigate('/orders')
       } else {
         toast.error(data.message)
       }

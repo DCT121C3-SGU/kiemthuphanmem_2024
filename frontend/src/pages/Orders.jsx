@@ -2,10 +2,12 @@ import { useContext, useState, useEffect } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Orders = () => {
   const { backendURL, token, currency } = useContext(ShopContext);
   const [orderData, setOrderData] = useState([]);
+  const [booking, setBooking] = useState([]);
   const loadOrderData = async () => {
     try {
       if (!token) {
@@ -21,7 +23,6 @@ const Orders = () => {
         response.data.orders.forEach((order) => {
           if (Array.isArray(order.items)) {
             order.items.forEach((item) => {
-              console.log(item);
               allOrdersItem.push({
                 ...item,
                 amount: order.amount,
@@ -35,14 +36,32 @@ const Orders = () => {
             console.error("order.items is not an array:", order);
           }
         });
-        console.log(allOrdersItem);
+
         setOrderData(allOrdersItem.reverse());
       }
     } catch (error) {}
   };
 
+  const getUserBooking = async () => {
+    try {
+        const { data } = await axios.get(backendURL + "/api/room/list-booking", {headers: {token}})
+        if (data.success) {
+            setBooking(data.bookingRoom.reverse())
+        }
+    } catch (error) {
+        console.log(error);
+    }
+  }
+
+  const checkButtonSubmit = () => {
+    toast.success("Đã cập nhập trạng thái đơn hàng")
+  }
+
   useEffect(() => {
     loadOrderData();
+    if (token) {
+      getUserBooking() 
+  }
   }, [token]);
 
   return (
@@ -52,7 +71,6 @@ const Orders = () => {
       </div>
       <div>
         {
-          //only frontend, not have backend
           orderData.map((item, index) => (
             <div
               key={index}
@@ -98,15 +116,70 @@ const Orders = () => {
               </div>
               <div className="md:w-1/2 flex justify-between">
                 <div className="flex items-center gap-2">
-                  <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
+                  <p className={`min-w-2 h-2 rounded-full ${
+                    item.status === "Đã giao" ? "bg-green-500" : item.status === "Đã hủy" ? "bg-red-500" : "bg-yellow-500"  
+                  } bg-green-500`}></p>
                   <p className="text-sm md:text-base">{item.status}</p>
                 </div>
-                <button onClick={loadOrderData} className="border px-4 py-2 text-sm font-medium rounded-sm">Kiểm tra trạng thái đơn hàng</button>
+                <button onClick={() => {loadOrderData(); checkButtonSubmit()}} className="border px-4 py-2 text-sm font-medium rounded-sm">Kiểm tra trạng thái đơn hàng</button>
               </div>
             </div>
           ))
         }
       </div>
+
+      <div className="text-2xl mt-10">
+        <Title text1={"ĐẶT"} text2={"PHÒNG"} />
+      </div>
+
+      <div>
+        {
+          booking.map((item, index) => (
+            console.log(item),
+            <div
+              key={index}
+              className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+            >
+              <div className="flex items-start gap-6 text-sm">
+                <div>
+                  <p className="sm:text-base font-medium">{item.roomData.room_name}</p>
+                  <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
+                    <p>
+                      {item.roomData.room_price} {currency}
+                    </p>
+                    <p>Loại phòng: {item.roomData.room_type}</p>
+                  </div>
+                  <p className="mt-1">
+                    Ngày đặt hàng: {" "}
+                    <span className="text-gray-400">
+                      {" "}
+                      {new Date(item.date).toLocaleDateString("vi-VN", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="md:w-1/2 flex justify-between">
+                <div className="flex items-center gap-2">
+                  <p className={`min-w-2 h-2 rounded-full ${
+                    !item.cancelled && item.isCompleted ? "bg-green-500" : item.cancelled ? "bg-red-500" : "bg-yellow-500"  
+                  } bg-green-500`}></p>
+                  <p className="text-sm md:text-base">
+                    {
+                      !item.cancelled && item.isCompleted ? "Phòng đã được đặt" : item.cancelled ? "Phòng đã hủy" : "Phòng đang chờ xác nhận"
+                    }
+                  </p>
+                </div>
+                <button onClick={() => {getUserBooking(); checkButtonSubmit()}} className="border px-4 py-2 text-sm font-medium rounded-sm">Kiểm tra trạng thái đơn hàng</button>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
     </div>
   );
 };

@@ -10,13 +10,14 @@ const Login = () => {
     const [currentState, setCurrentSate] = useState('Đăng nhập')
     const {token, setToken, backendURL} = useContext(ShopContext)
     const [name, setName] = useState('')
+    const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const onSubmitHandler = async(event) => {
         event.preventDefault(); // ngăn chặn load trang khi bấm nút đăng nhập
         try {
             if (currentState === "Đăng ký") {
-                const response = await axios.post(backendURL + "/api/user/register", {name,email,password}) 
+                const response = await axios.post(backendURL + "/api/user/register", {name,email,password,phone}) 
                 if (response.data.success) {
                     setToken(response.data.token)
                     localStorage.setItem("token", response.data.token)
@@ -30,6 +31,8 @@ const Login = () => {
                     localStorage.setItem("token", response.data.token)
                 } else {
                     toast.error(response.data.message)
+                    setEmail('')
+                    setPassword('')
                 }
             }
         } catch (error) {
@@ -50,7 +53,8 @@ const Login = () => {
             <p className="prata-regular text-3xl">{currentState}</p>
             <hr className="border-none h-[1.5px] w-8 bg-gray-800" />
         </div>
-        {currentState === 'Đăng nhập' ? '' : <input onChange={(e) => setName(e.target.value)} value={name} type="text" className="w-full px-3 py-2 border border-gray-800" placeholder="Họ và tên" required />}
+        {currentState === 'Đăng nhập' ? '' : <input onChange={(e) => setName(e.target.value)} value={name} type="text" className="w-full px-3 py-2 border border-gray-800" placeholder="Họ và tên" required /> }
+        {currentState === 'Đăng nhập' ? '' : <input onChange={(e) => setPhone(e.target.value)} value={phone} type="phone" className="w-full px-3 py-2 border border-gray-800" placeholder="Số điện thoại" required /> }
         <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" className="w-full px-3 py-2 border border-gray-800" placeholder="Email" required />
         <input onChange={(e) => setPassword(e.target.value)} value={password} type="password" className="w-full px-3 py-2 border border-gray-800" placeholder="Mật khẩu" required />
         <div className="w-full flex justify-between text-sm mt-[-8px]">

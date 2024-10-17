@@ -102,7 +102,7 @@ const Order = ({ token }) => {
             </div>
             <p className="text-sm sm:text-[15px]">{order.amount + " " + currency}</p>
             <select value={order.status} onChange={(e) => statusHandler(e, order._id)} className="p-2 font-medium">
-              <option value="Đang giao">Đang giao</option>
+              <option value="Đã đặt hàng">Đã đặt hàng</option>
               <option value="Đã giao">Đã giao</option>
               <option value="Đã hủy">Đã hủy</option>
             </select>
