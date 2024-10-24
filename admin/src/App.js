@@ -7,6 +7,7 @@ import Order from "./pages/Order";
 import Login from "./components/Login";
 import AddRoom from "./pages/AddRoom";
 import ListRoom from "./pages/ListRoom";
+import Booking from "./pages/Booking"
 import { useEffect, useState } from "react";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="/orders" element={<Order token={token} />} />
                 <Route path="/add-room" element={<AddRoom token={token} />} />
                 <Route path="/list-room" element={<ListRoom token={token} />} />
+                <Route path="/list-booking" element={<Booking token={token} />} />
               </Routes>
             </div>
           </div>

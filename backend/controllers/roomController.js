@@ -78,8 +78,7 @@ const bookingRoom = async(req, res) => {
 
 const listBooking = async(req,res) => {
     try {
-        const {userId} = req.body
-        const bookingRoom =  await bookingModel.find({userId})
+        const bookingRoom =  await bookingModel.find({})
         res.json({success:true, bookingRoom})
     } catch (error) {
         console.log(error);
