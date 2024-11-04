@@ -29,6 +29,10 @@ const Sidebar = () => {
                 <img className='w-5 h-5' src={assets.order_icon} alt="" />
                 <p className='hidden md:block'>Quản lý đặt phòng</p>
             </NavLink>
+            <NavLink className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-1' to="/add-event">
+                <img className='w-5 h-5' src={assets.order_icon} alt="" />
+                <p className='hidden md:block'>Thêm sự kiện</p>
+            </NavLink>
         </div>
     </div>
   )

@@ -14,6 +14,7 @@ const ShopContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({})
     const [token, setToken] = useState('')
     const [roomList, setRoomList] = useState([])
+    const [eventList, setEventList] = useState([])
 
     const addToCart = async (itemId, size) => { //add product have _id product and sizes
         // not choose size for product
@@ -126,6 +127,21 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    const getEventList = async () => {
+        try { // Added try-catch block
+            const response = await axios.get(backendURL + '/api/event/list')
+            if (response.data.success) {
+                setEventList(response.data.events)
+            }
+            else{
+                toast.error(response.data.message)
+            }
+        } catch (error) { 
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+
     const getUserCart = async (token) => {
         try {
             const response = await axios.post(backendURL + '/api/cart/get', {}, {headers: {token}})
@@ -160,6 +176,7 @@ const ShopContextProvider = (props) => {
         getProducts()
         getRoomList()
         getRoomData()
+        getEventList()
     },[])
 
     useEffect(() => {
@@ -176,7 +193,8 @@ const ShopContextProvider = (props) => {
         getCartCount, updateQuantity, setCartItems,
         getCartAmount, backendURL,
         setToken, token,
-        roomList, getRoomData
+        roomList, getRoomData,
+        eventList, getEventList
     }
 
     return (

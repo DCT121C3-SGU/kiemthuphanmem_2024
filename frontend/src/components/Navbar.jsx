@@ -33,8 +33,8 @@ function NavBar() {
           <p>ĐẶT CHỔ</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden"></hr>
         </NavLink>
-        <NavLink to="/about" className="flex flex-col items-center gap-1">
-          <p>VỀ CHÚNG TÔI</p>
+        <NavLink to="/event" className="flex flex-col items-center gap-1">
+          <p>SỰ KIỆN</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden"></hr>
         </NavLink>
         <NavLink to="/contact" className="flex flex-col items-center gap-1">

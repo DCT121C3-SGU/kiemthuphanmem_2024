@@ -76,9 +76,11 @@ import cross_icon from './cross_icon.png'
 import momo_icon from './momo_icon.png'
 import visa_icon from './visa_icon.png'
 import room_icon from './room.png'
+import banner from './banner.jpg'
 
 export const assets = {
     logo,
+    banner,
     hero_img,
     cart_icon,
     dropdown_icon,

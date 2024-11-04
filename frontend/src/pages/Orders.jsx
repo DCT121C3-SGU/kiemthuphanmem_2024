@@ -44,13 +44,21 @@ const Orders = () => {
 
   const getUserBooking = async () => {
     try {
-        const { data } = await axios.get(backendURL + "/api/room/list-booking", {headers: {token}})
-        if (data.success) {
-            setBooking(data.bookingRoom.reverse())
-        }
+      if (!token){
+        return null
+      }
+      const response = await axios.post(
+        backendURL + "/api/room/user-booking",
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        setBooking(response.data.bookings)
+      }
     } catch (error) {
-        console.log(error);
+      console.log(error)
     }
+    
   }
 
   const checkButtonSubmit = () => {
@@ -150,7 +158,7 @@ const Orders = () => {
                     <p>Loại phòng: {item.roomData.room_type}</p>
                   </div>
                   <p className="mt-1">
-                    Ngày đặt hàng: {" "}
+                    Ngày đặt phòng: {" "}
                     <span className="text-gray-400">
                       {" "}
                       {new Date(item.date).toLocaleDateString("vi-VN", {
@@ -158,6 +166,12 @@ const Orders = () => {
                         month: "long",
                         day: "numeric",
                       })}
+                    </span>
+                  </p>
+                  <p className="mt-1">
+                    Giờ đặt phòng: {" "}
+                    <span className="text-gray-400">
+                      {item.slotTime}
                     </span>
                   </p>
                 </div>

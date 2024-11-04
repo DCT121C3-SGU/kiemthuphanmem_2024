@@ -86,4 +86,30 @@ const listBooking = async(req,res) => {
     }
 }
 
-export { listRoom, addRoom, bookingRoom, listBooking }
+const userBooking = async(req,res) => {
+    try {
+        const { userId } = req.body
+        const bookings = await bookingModel.find({userId})
+        res.status(200).json({ success: true, bookings })
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const bookingCancel = async (req, res) => {
+    try {
+        const { bookingId, cancel, complete } = req.body;
+        await bookingModel.findByIdAndUpdate(bookingId, {
+            cancelled: cancel,
+            isCompleted: complete
+        });
+        res.status(200).json({ success: true, message: "Cập nhật trạng thái đơn hàng thành công" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
+
+
+export { listRoom, addRoom, bookingRoom, listBooking, userBooking, bookingCancel }

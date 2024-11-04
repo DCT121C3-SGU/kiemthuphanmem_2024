@@ -12,6 +12,8 @@ import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import Booking from "./pages/Booking";
 import Room from "./pages/Room";
+import Event from "./pages/Event";
+import EventDetail from "./pages/EventDetail";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -27,7 +29,9 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/product/:productId" element={<Product />} />
           <Route path="/room/:roomId" element={<Room />} />
+          <Route path="/event/:eventId" element={<EventDetail />} />
           <Route path="/card" element={<Card />} />
+          <Route path="/event" element={<Event />} />
           <Route path="/place-order" element={<PlaceOrder />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/login" element={<Login />} />
