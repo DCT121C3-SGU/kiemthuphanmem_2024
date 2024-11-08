@@ -14,7 +14,7 @@ const PlaceOrder = () => {
     cartItems,
     setCartItems,
     getCartAmount,
-    delivery_fee,
+    getDeliveryFee,
     products,
   } = useContext(ShopContext);
   const [method, setMethod] = useState("cod");
@@ -55,8 +55,11 @@ const PlaceOrder = () => {
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee,
+        amount: getCartAmount(),
       };
+      console.log('orderData', orderData);
+      console.log('getCartAmount', getCartAmount());
+      console.log('getDeliveryFee', getDeliveryFee());
       switch (method) {
         // API call for COD
         case "cod":
@@ -100,7 +103,7 @@ const PlaceOrder = () => {
       {/* ---------- LEFT SIDE ----------- */}
       <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
         <div className="text-xl sm:text-2xl my-2">
-          <Title text1={"THÔNG TIN"} text2={"VẬN CHUYỂN"} />
+          <Title text1={"THÔNG TIN"} text2={"THANH TOÁN"} />
         </div>
         <div className="flex gap-3">
           <input

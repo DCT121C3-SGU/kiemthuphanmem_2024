@@ -62,4 +62,24 @@ const getAmountEvent = async(req, res) => {
     }
 }
 
-export { eventBooking, getAmountEvent, updateAmount }
+const userEventBooking = async(req,res) => {
+    try {
+        const { userId } = req.body
+        const bookings = await eventBookingModel.find({userId})
+        res.status(200).json({ success: true, bookings })
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+const listEventBooking = async(req,res) => {
+    try {
+        const bookingEvent =  await eventBookingModel.find({})
+        res.json({success:true, bookingEvent})
+    } catch (error) {
+        console.log(error);
+        res.json({success:false, message:error.message})  
+    }
+}
+
+export { eventBooking, getAmountEvent, updateAmount, userEventBooking, listEventBooking }

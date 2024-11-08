@@ -9,6 +9,7 @@ import AddRoom from "./pages/AddRoom";
 import ListRoom from "./pages/ListRoom";
 import Booking from "./pages/Booking"
 import AddEvent from "./pages/AddEvent"
+import EventBooking from "./pages/EventBooking"
 import { useEffect, useState } from "react";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -43,6 +44,7 @@ const App = () => {
                 <Route path="/list-room" element={<ListRoom token={token} />} />
                 <Route path="/list-booking" element={<Booking token={token} />} />
                 <Route path="/add-event" element={<AddEvent token={token} />} />
+                <Route path="/list-event" element={<EventBooking token={token} />} />
               </Routes>
             </div>
           </div>

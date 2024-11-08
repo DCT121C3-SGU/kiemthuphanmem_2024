@@ -13,7 +13,7 @@ const Add = ({token}) => {
 
   const [name,setName] = useState('')
   const [description,setDescription] = useState('')
-  const [category,setCategory] = useState('Men')
+  const [category,setCategory] = useState('Coffee')
   const [price,setPrice] = useState('')
   const [size,setSize] = useState([])
   const [bestseller,setBestseller] = useState(false)
@@ -40,7 +40,7 @@ const Add = ({token}) => {
         toast.success(response.data.message)
         setName('')
         setDescription('')
-        setCategory('Men')
+        setCategory('Coffee')
         setPrice('')
         setBestseller(false)
         setImage1(false)
@@ -110,9 +110,9 @@ const Add = ({token}) => {
         <div>
           <p className="mb-2">Phân loại sản phẩm</p>
           <select onChange={(e)=>setCategory(e.target.value)} className="w-full px-3 py-2">
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
-            <option value="Kids">Kids</option>
+            <option value="Coffee">Coffee</option>
+            <option value="Bánh ngọt">Bánh ngọt</option>
+            <option value="Trà">Trà</option>
           </select>
         </div>
         <div>
