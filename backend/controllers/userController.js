@@ -32,7 +32,6 @@ const loginUser = async(req, res) => {
     }
 }
 
-
 // Route for user register
 const registerUser = async(req, res) => {
     try {
@@ -133,4 +132,40 @@ const bookingRoom = async(req, res) => {
     }
 }
 
-export { loginUser, registerUser, adminLogin, bookingRoom }
+const profileUser = async(req, res) => {
+    try {
+        const {userId} = req.body
+        const userData = await userModel.findById(userId)
+        res.json({success:true, userData})
+    } catch (error) {
+        console.log(error);
+        res.json({success:false, message:error.message})
+    }
+}
+
+const updateUser = async (req, res) => {
+    try {
+        const { userId, phone, address } = req.body;
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.json({ success: false, message: "Người dùng không tồn tại" });
+        }
+        if (phone) {
+            if (!validator.isMobilePhone(phone, "vi-VN")) {
+                return res.json({ success: false, message: "Số điện thoại không hợp lệ" });
+            }
+            user.phone = phone;
+        }
+        if (address) {
+            user.address = address;
+        }
+        await user.save();
+        res.json({ success: true, message: "Cập nhật thông tin thành công", user });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+
+export { loginUser, registerUser, adminLogin, bookingRoom, profileUser, updateUser }
