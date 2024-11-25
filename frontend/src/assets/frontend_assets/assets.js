@@ -77,6 +77,7 @@ import momo_icon from './momo_icon.png'
 import visa_icon from './visa_icon.png'
 import room_icon from './room.png'
 import banner from './banner.jpg'
+import banner_event  from './banner_event.png'
 
 export const assets = {
     logo,
@@ -100,7 +101,8 @@ export const assets = {
     cross_icon,
     momo_icon,
     visa_icon,
-    room_icon
+    room_icon,
+    banner_event
 }
 
 export const products = [
