@@ -27,4 +27,14 @@ const listEvent = async (req, res) => {
     }
 }
 
-export { addEvent, listEvent }
+const removeEvent = async(req, res) => {
+    try {
+        await eventModel.findByIdAndDelete(req.body.id)
+        res.json({success: true, message: "Xóa event thành công!"})
+    } catch (error) {
+        console.log(error);
+        res.json({success: false, message: error.message})
+    }
+}
+
+export { addEvent, listEvent, removeEvent }

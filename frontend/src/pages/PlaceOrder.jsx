@@ -35,6 +35,7 @@ const PlaceOrder = () => {
   };
   const navigate = useNavigate();
   const submitHandler = async (event) => {
+    const amount = getCartAmount() + getDeliveryFee();
     event.preventDefault();
     try {
       let orderItems = [];
@@ -52,14 +53,12 @@ const PlaceOrder = () => {
           }
         }
       }
+
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount(),
+        amount: amount,
       };
-      console.log('orderData', orderData);
-      console.log('getCartAmount', getCartAmount());
-      console.log('getDeliveryFee', getDeliveryFee());
       switch (method) {
         // API call for COD
         case "cod":
@@ -76,6 +75,7 @@ const PlaceOrder = () => {
           }
           break;
         case "momo":
+          console.log(orderData);
           const momoResponse = await axios.post(
             backendURL + "/api/order/momo",
             orderData,

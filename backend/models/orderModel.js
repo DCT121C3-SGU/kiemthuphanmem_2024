@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema({
     status: { type: String, required: true, default: "Đã đặt hàng" },
     paymentMethod: { type: String, required: true},
     payment: { type: Boolean, required: true, default: false },
+    orderId: { type: String, required: true },
     date: { type: Date, required: true },
 })
 

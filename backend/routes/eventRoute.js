@@ -1,5 +1,5 @@
 import express from "express";
-import { addEvent, listEvent } from "../controllers/eventController.js";
+import { addEvent, listEvent, removeEvent } from "../controllers/eventController.js";
 import {
   eventBooking,
   getAmountEvent,
@@ -13,6 +13,7 @@ import adminAuth from "../middleware/adminAuth.js";
 
 const eventRouter = express.Router();
 
+eventRouter.post("/remove", adminAuth, removeEvent);
 eventRouter.post("/add", upload.none(), addEvent);
 eventRouter.get("/list", listEvent);
 eventRouter.post("/event-booking", authUser, eventBooking);

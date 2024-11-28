@@ -15,9 +15,9 @@ const LatestCollection = () => {
     return (
         <div className='my-10'>
             <div className='text-center py-8 text-3x1'>
-                <Title text1={'BỘ SƯU TẬP'} text2={'MỚI NHẤT'}/>
+                <Title text1={'SẢN PHẨM'} text2={'MỚI NHẤT'}/>
                 <p className='w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime dolor iusto iure blanditiis placeat cumque doloremque voluptatum dicta illo ex obcaecati est quia repellat at, veniam ad quam maiores corrupti!
+                    Cập nhật mỗi ngày, hàng ngàn sản phẩm mới với giá tốt nhất
                 </p>
             </div>
 

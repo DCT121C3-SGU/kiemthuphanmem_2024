@@ -93,7 +93,8 @@ const Orders = () => {
 
   return (
     <div className="border-t pt-16">
-      <div className="text-2xl">
+      <span className="text-sm text-center"><i>Với các đơn hàng thanh toán Momo, nếu đơn hàng các bạn thanh toán không thành công, chúng tôi sẽ gọi cho bạn để xác nhận và tiến hành phương thức thanh toán khác cho bạn. Nếu bạn không nhắc máy, chúng tôi sẽ <strong>hủy</strong>  đơn hàng của bạn</i></span>
+      <div className="text-2xl mt-8">
         <Title text1={"ĐƠN HÀNG"} text2={"CỦA TÔI"} />
       </div>
       <div>

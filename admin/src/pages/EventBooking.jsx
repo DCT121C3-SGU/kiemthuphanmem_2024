@@ -28,6 +28,22 @@ const EventBooking = ({ token }) => {
     }
   };
 
+  const removeEvent = async(id) => {
+    try {
+      const response = await axios.post(backendUrl + '/api/event/remove', {id}, {headers: {token}})
+      if (response.data.success) {
+        toast.success(response.data.message)
+        await fetchAllEvent()
+      }
+      else{
+        toast.error(response.data.message)
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message)
+    }
+  }
+
 
   useEffect(() => {
     fetchAllEvent();

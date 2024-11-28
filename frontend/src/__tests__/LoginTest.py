@@ -9,6 +9,10 @@ import unittest
 import time
 import sys
 from datetime import datetime
+from colorama import init, Fore
+
+# Khởi tạo colorama
+init(autoreset=True)
 
 class LoginTest(unittest.TestCase):
     def setUp(self):
@@ -32,9 +36,10 @@ class LoginTest(unittest.TestCase):
     def log_result(self, test_name, result, error=None):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         status = "PASS" if result else "FAIL"
-        print(f"[{timestamp}] {test_name}: {status}")
+        status_color = Fore.GREEN if result else Fore.RED  # Dùng màu xanh cho PASS và màu đỏ cho FAIL
+        print(f"[{timestamp}] {test_name}: {status_color}{status}")
         if error:
-            print(f"Error details: {error}")
+            print(f"{Fore.YELLOW}Error details: {error}")
         print("-" * 50)
 
     def test_01_login_page_loads(self):
@@ -143,5 +148,4 @@ if __name__ == "__main__":
     print(f"Tests Failed: {len(result.failures)}")
     print(f"Tests Errored: {len(result.errors)}")
     
-
     sys.exit(not result.wasSuccessful())
