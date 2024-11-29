@@ -1,7 +1,7 @@
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import { assets } from "../assets/frontend_assets/assets";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import axios from "axios";
@@ -94,6 +94,38 @@ const PlaceOrder = () => {
       }
     } catch (error) {}
   };
+
+  const getUserData = async () => {
+    try {
+      const response = await axios.post(backendURL + "/api/user/profile", {}, {
+        headers: { token }
+      });
+      if (response.data.success) {
+
+        const { email, address, phone, name } = response.data.userData;
+        const nameParts = name.split(" ");
+        const firstName = nameParts.slice(0, nameParts.length - 1).join(" ");
+        const lastName = nameParts[nameParts.length - 1];
+
+        setFormData({
+          firstName,
+          lastName,
+          email,
+          address,
+          city: "",
+          district: "",
+          ward: "",
+          phone
+        })
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  },[])
 
   return (
     <form

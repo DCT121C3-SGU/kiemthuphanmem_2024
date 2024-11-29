@@ -37,10 +37,10 @@ function NavBar() {
           <p>SỰ KIỆN</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden"></hr>
         </NavLink>
-        <NavLink to="/contact" className="flex flex-col items-center gap-1">
+        {/* <NavLink to="/contact" className="flex flex-col items-center gap-1">
           <p>LIÊN HỆ</p>
           <hr className="w-2/4 border-none h-[1.5px] bg-gray-700 hidden"></hr>
-        </NavLink>
+        </NavLink> */}
       </ul>
 
       <div className="flex items-center gap-6">
@@ -128,13 +128,13 @@ function NavBar() {
           >
             VỀ CHÚNG TÔI
           </NavLink>
-          <NavLink
+          {/* <NavLink
             onClick={() => setVisible(false)}
             className="py-2 pl-6 border"
             to="/contact"
           >
             LIÊN HỆ
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
     </div>

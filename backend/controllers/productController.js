@@ -2,27 +2,33 @@ import { v2 as cloudinary} from 'cloudinary';
 import productModel from '../models/productModel.js';
 
 // function for add product
-const addProduct = async(req, res) => {
+const addProduct = async (req, res) => {
     try {
-        console.log(req.files); // Log the entire req.files object
+        console.log("req.files:", req.files); // Kiểm tra xem có file nào không
 
         const { name, description, price, category, sizes, bestseller } = req.body;
 
-        const image1 =  req.files.image1 && req.files.image1[0];
-        const image2 =  req.files.image2 && req.files.image2[0];
-        const image3 =  req.files.image3 && req.files.image3[0];
-        const image4 =  req.files.image4 && req.files.image4[0];
+        const image1 = req.files.image1 && req.files.image1[0];
+        const image2 = req.files.image2 && req.files.image2[0];
+        const image3 = req.files.image3 && req.files.image3[0];
+        const image4 = req.files.image4 && req.files.image4[0];
 
-        const images = [image1, image2, image3, image4].filter((item) => item !== undefined); // make sure to remove undefined values
+        // Kiểm tra lại mảng image có dữ liệu hay không
+        const images = [image1, image2, image3, image4].filter((item) => item !== undefined);
+        console.log("Filtered images:", images); // Kiểm tra dữ liệu của mảng images
+
+        if (images.length === 0) {
+            return res.json({ success: false, message: "Không có hình ảnh nào để tải lên!" });
+        }
 
         // Upload images to cloudinary
         let imagesUrl = await Promise.all(
             images.map(async (item) => {
-                let result = await cloudinary.uploader.upload(item.path,{resource_type: 'image'});
-                return result.secure_url; 
+                let result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
+                return { url: result.secure_url, public_id: result.public_id }; // Chắc chắn trả về url và public_id
             })
         );
-        
+
         const productData = {
             name,
             description,
@@ -30,22 +36,23 @@ const addProduct = async(req, res) => {
             category,
             sizes: JSON.parse(sizes),
             bestseller: bestseller === 'true' ? true : false,
-            image: imagesUrl,
+            images: imagesUrl, // Lưu mảng chứa url và public_id của ảnh
             date: Date.now(),
-        }
+        };
 
-        console.log(productData)
+        console.log("Product data to save:", productData);
 
         const product = new productModel(productData);
         await product.save();
 
-        res.json({success: true, message: "Thêm sản phẩm thành công!"});
+        res.json({ success: true, message: "Thêm sản phẩm thành công!" });
 
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
-}
+};
+
 
 
 // function for list product
@@ -60,16 +67,35 @@ const listProduct = async(req, res) => {
 }
 
 // function for remove product
-const removeProduct = async(req, res) => {
+const removeProduct = async (req, res) => {
     try {
-        await productModel.findByIdAndDelete(req.body.id)
-        res.json({success: true, message: "Xóa sản phẩm thành công!"})
+        // Tìm sản phẩm theo ID
+        const product = await productModel.findById(req.body.id);
 
+        if (!product) {
+            return res.json({ success: false, message: "Không tìm thấy sản phẩm!" });
+        }
+
+        // Lấy danh sách public_id từ product.images
+        const imagePublicIds = product.images.map(image => image.public_id);
+
+        // Xóa từng ảnh trên Cloudinary
+        await Promise.all(
+            imagePublicIds.map(async (public_id) => {
+                await cloudinary.uploader.destroy(public_id); // Xóa ảnh
+            })
+        );
+
+        // Xóa sản phẩm khỏi cơ sở dữ liệu
+        await productModel.findByIdAndDelete(req.body.id);
+
+        res.json({ success: true, message: "Xóa sản phẩm và ảnh thành công!" });
     } catch (error) {
         console.log(error);
-        res.json({success: false, message: error.message})        
+        res.json({ success: false, message: error.message });
     }
-}
+};
+
 
 // function for single product
 const singleProduct = async(req, res) => {
@@ -82,6 +108,53 @@ const singleProduct = async(req, res) => {
         res.json({success: false, message: error.message})      
     }
 }
+
+// function for edit product
+const editProduct = async (req, res) => {
+    try {
+        const { productId, name, description, price, category, sizes, bestseller } = req.body;
+
+        const newImages = [req.files.image1, req.files.image2, req.files.image3, req.files.image4].filter(item => item !== undefined);
+
+        const product = await productModel.findById(productId);
+
+        if (!product) {
+            return res.json({ success: false, message: "Không tìm thấy sản phẩm!" });
+        }
+        if (newImages.length > 0) {
+            const imagePublicIds = product.images.map(image => image.public_id);
+
+            await Promise.all(
+                imagePublicIds.map(async (public_id) => {
+                    await cloudinary.uploader.destroy(public_id);
+                })
+            );
+
+            const imagesUrl = await Promise.all(
+                newImages.map(async (item) => {
+                    const result = await cloudinary.uploader.upload(item[0].path, { resource_type: 'image' });
+                    return { url: result.secure_url, public_id: result.public_id };
+                })
+            );
+            product.images = imagesUrl;
+        }
+
+        product.name = name || product.name;
+        product.description = description || product.description;
+        product.price = price ? Number(price) : product.price;
+        product.category = category || product.category;
+        product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
+        product.bestseller = bestseller === 'true' ? true : false;
+
+        await product.save();
+
+        res.json({ success: true, message: "Cập nhật sản phẩm thành công!" });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
 
 export { listProduct, addProduct, removeProduct, singleProduct }
 
