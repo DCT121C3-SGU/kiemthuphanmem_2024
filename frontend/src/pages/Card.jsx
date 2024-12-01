@@ -40,6 +40,7 @@ const Card = () => {
           const productData = products.find(
             (product) => product._id === item._id
           );
+          console.log(productData);
           return (
             <div
               key={index}
@@ -48,7 +49,7 @@ const Card = () => {
               <div className="flex items-start gap-6">
                 <img
                   className="w-16 sm:w-20"
-                  src={productData.image[0]}
+                  src={productData.images[0].url}
                   alt=""
                 />
                 <div>

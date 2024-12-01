@@ -111,7 +111,7 @@ const Menu = () => {
                 {/* MAP PRODUCT */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-6">
                     {currentProducts.map((item, index) => (
-                        <ProductItem key={index} id={item._id} image={item.image} name={item.name} price={item.price} />
+                        <ProductItem key={index} id={item._id} image={item.images} name={item.name} price={item.price} />
                     ))}
                 </div>
                 

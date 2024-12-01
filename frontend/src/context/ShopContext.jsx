@@ -28,6 +28,11 @@ const ShopContextProvider = (props) => {
             return;
         }
 
+        if (!token) {
+            toast.error("Đăng nhập để thêm vào giỏ hàng!");
+            return;
+        }
+
         let cartData = structuredClone(cartItems);
 
         if (cartData[itemId]) {
@@ -46,6 +51,7 @@ const ShopContextProvider = (props) => {
         if (token) {
             try {
                 await axios.post(`${backendURL}/api/cart/add`, { itemId, size }, { headers: { token } });
+                console.log("add to cart success");
                 toast.success("Đã thêm vào giỏ hàng");
             } catch (error) {
                 console.log(error);
