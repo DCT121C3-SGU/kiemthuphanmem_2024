@@ -20,7 +20,7 @@ const loginUser = async(req, res) => {
         const isMatch = await bcrypt.compare(password, user.password)
         if (isMatch) {
             const token = createToken(user._id)
-            res.json({success : true , token })
+            res.json({success : true , message: "Đăng nhập thành công", token });
         }
         else{
             res.json({success:false, message:"Bạn ơi hình như có gì đó sai sai!"})
@@ -64,7 +64,7 @@ const registerUser = async(req, res) => {
         //after create user, provide token
         const token = createToken(user._id)
 
-        res.json({success:true, token})
+        res.json({success:true, message: "Đăng ký thành công",  token})
 
     } catch (error) {
         console.log(error);
