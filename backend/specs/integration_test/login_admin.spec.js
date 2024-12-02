@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import app from '../server.js';
+import app from '../../server.js';
 import jwt from 'jsonwebtoken';
 
 describe('POST /admin/login', () => {

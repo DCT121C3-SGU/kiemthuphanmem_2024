@@ -1,8 +1,8 @@
 import request from 'supertest';
 import { expect } from 'chai';
 import sinon from 'sinon';
-import app from '../server.js';
-import userModel from '../models/userModel.js';
+import app from '../../server.js';
+import userModel from '../../models/userModel.js';
 import bcrypt from 'bcrypt';
 
 describe('POST /register', () => {

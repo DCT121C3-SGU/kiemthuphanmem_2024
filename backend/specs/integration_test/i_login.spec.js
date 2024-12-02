@@ -2,8 +2,8 @@ import request from 'supertest';
 import { expect } from 'chai';
 import sinon from 'sinon';
 import bcrypt from 'bcrypt';
-import app from '../server.js';
-import userModel from '../models/userModel.js';
+import app from '../../server.js';
+import userModel from '../../models/userModel.js';
 
 describe('POST /login', () => {
     let findOneStub;

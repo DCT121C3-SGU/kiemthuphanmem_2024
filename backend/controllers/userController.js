@@ -15,20 +15,19 @@ const loginUser = async(req, res) => {
         const { email, password } = req.body
         const user = await userModel.findOne({email})
         if (!user) {
-            return res.json({success:false, message:"Tài khoản không tồn tại" })
+            return res.status(404).json({success:false, message:"Tài khoản không tồn tại" })
         }
         const isMatch = await bcrypt.compare(password, user.password)
         if (isMatch) {
             const token = createToken(user._id)
-            res.json({success : true , message: "Đăng nhập thành công", token });
+            res.status(200).json({success : true , message: "Đăng nhập thành công", token });
         }
         else{
-            res.json({success:false, message:"Bạn ơi hình như có gì đó sai sai!"})
+            res.status(401).json({success:false, message:"Bạn ơi hình như có gì đó sai sai!"})
         }
     } catch (error) {
         console.log(error);
-        console.log("error here");
-        res.json({success:false, message:error.message})
+        res.status(500).json({success:false, message:error.message})
     }
 }
 
@@ -39,14 +38,14 @@ const registerUser = async(req, res) => {
         // check user already exists or not
         const exists = await userModel.findOne({email})
         if (exists) {
-            return res.json({success:false, message:"Tài khoản đã tồn tại" })
+            return res.status(400).json({success:false, message:"Tài khoản đã tồn tại" })
         }
         // validate email format and strong password
         if (!validator.isEmail(email)) {
-            return res.json({success:false, message:"Email không hợp lệ" })
+            return res.status(400).json({success:false, message:"Email không hợp lệ" })
         }
         if (password.length <= 8){
-            return res.json({success:false, message:"Mật khẩu phải chứa hơn 8 kí tự" })
+            return res.status(400).json({success:false, message:"Mật khẩu phải chứa hơn 8 kí tự" })
         }
         // hashing password
         const salt = await bcrypt.genSalt(10) // 5 -> 15
@@ -64,11 +63,11 @@ const registerUser = async(req, res) => {
         //after create user, provide token
         const token = createToken(user._id)
 
-        res.json({success:true, message: "Đăng ký thành công",  token})
+        res.status(201).json({success:true, message: "Đăng ký thành công",  token})
 
     } catch (error) {
         console.log(error);
-        res.json({success:false, message:error.message})
+        res.status(500).json({success:false, message:error.message})
     }
 }
 
@@ -79,14 +78,14 @@ const adminLogin = async(req, res) => {
         if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             // sign(payload, jwt_secret_key) create jwt
             const token = jwt.sign(email + password, process.env.JWT_SECRET)
-            res.json({success:true, token})
+            res.status(200).json({success:true, token})
         }
         else{
-            res.json({success:false, message:"Tài khoản hoặc mật khẩu không đúng" })
+            res.status(401).json({success:false, message:"Tài khoản hoặc mật khẩu không đúng" })
         }
     } catch (error) {
         console.log(error);
-        res.json({success:false, message:error.message})
+        res.status(500).json({success:false, message:error.message})
     }
 }
 
@@ -168,4 +167,4 @@ const updateUser = async (req, res) => {
 };
 
 
-export { loginUser, registerUser, adminLogin, bookingRoom, profileUser, updateUser }
+export {loginUser, registerUser, adminLogin, bookingRoom, profileUser, updateUser }

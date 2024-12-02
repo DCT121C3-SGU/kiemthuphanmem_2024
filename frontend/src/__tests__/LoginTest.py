@@ -16,10 +16,9 @@ init(autoreset=True)
 
 class LoginTest(unittest.TestCase):
     def setUp(self):
-        # Cấu hình Chrome Options
         chrome_options = Options()
         chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        chrome_options.add_argument('--log-level=3')  # Only show fatal errors
+        chrome_options.add_argument('--log-level=3')
         chrome_options.add_argument('--silent')
         
         # Tạo driver Chrome
