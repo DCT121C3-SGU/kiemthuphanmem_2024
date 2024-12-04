@@ -14,105 +14,61 @@ const ShopContextProvider = (props) => {
     const [token, setToken] = useState('');
     const [roomList, setRoomList] = useState([]);
     const [eventList, setEventList] = useState([]);
+    const delivery_fee = 5000;
 
-    // Phí giao hàng theo kích thước
-    const deliveryFeeBySize = {
-        S: 0,
-        M: 5000,
-        L: 10000,
-    };
-
-    const addToCart = async (itemId, size) => {
-        if (!size) {
-            toast.error("Đừng quên chọn size nhé!");
-            return;
-        }
-
+    const addToCart = async (itemId) => {
         if (!token) {
             toast.error("Đăng nhập để thêm vào giỏ hàng!");
             return;
         }
-
+    
         let cartData = structuredClone(cartItems);
-
+    
         if (cartData[itemId]) {
-            if (cartData[itemId][size]) {
-                cartData[itemId][size] += 1;
-            } else {
-                cartData[itemId][size] = 1;
-            }
+            cartData[itemId] += 1;
         } else {
-            cartData[itemId] = {};
-            cartData[itemId][size] = 1;
+            cartData[itemId] = 1;
         }
-
+    
         setCartItems(cartData);
-
-        if (token) {
-            try {
-                await axios.post(`${backendURL}/api/cart/add`, { itemId, size }, { headers: { token } });
-                console.log("add to cart success");
-                toast.success("Đã thêm vào giỏ hàng");
-            } catch (error) {
-                console.log(error);
-                toast.error(error.message);
-            }
+    
+        try {
+            await axios.post(`${backendURL}/api/cart/add`, { itemId }, { headers: { token } });
+            toast.success("Đã thêm vào giỏ hàng");
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
         }
     };
+    
 
     const getCartCount = () => {
-        let totalCount = 0;
-        for (const items in cartItems) {
-            for (const item in cartItems[items]) {
-                if (cartItems[items][item] > 0) {
-                    totalCount += cartItems[items][item];
-                }
-            }
-        }
-        return totalCount;
+        return Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
     };
 
-    const updateQuantity = async (itemId, size, quantity) => {
+    const updateQuantity = async (itemId, quantity) => {
         let cartData = structuredClone(cartItems);
-        cartData[itemId][size] = quantity;
+        cartData[itemId] = quantity;
         setCartItems(cartData);
-        if (token) {
-            try {
-                await axios.post(`${backendURL}/api/cart/update`, { itemId, size, quantity }, { headers: { token } });
-            } catch (error) {
-                console.log(error);
-                toast.error(error.message);
-            }
+    
+        try {
+            await axios.post(`${backendURL}/api/cart/update`, { itemId, quantity }, { headers: { token } });
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
         }
     };
+    
 
     const getCartAmount = () => {
         let totalAmount = 0;
         for (const items in cartItems) {
             const itemInfo = products.find((product) => product._id === items);
-            if (!itemInfo || isNaN(itemInfo.price)) {
-                continue;
-            }
-            for (const size in cartItems[items]) {
-                const quantity = cartItems[items][size];
-                if (quantity > 0) {
-                    totalAmount += itemInfo.price * quantity + deliveryFeeBySize[size] * quantity;
-                }
+            if (itemInfo && !isNaN(itemInfo.price)) {
+                totalAmount += itemInfo.price * cartItems[items];
             }
         }
         return totalAmount;
-    };
-
-    const getDeliveryFee = () => {
-        let totalDeliveryFee = 0;
-        for (const items in cartItems) {
-            for (const size in cartItems[items]) {
-                const quantity = cartItems[items][size];
-                const sizeFee = deliveryFeeBySize[size] || 0;
-                totalDeliveryFee += sizeFee * quantity;
-            }
-        }
-        return totalDeliveryFee;
     };
 
     const getProducts = async () => {
@@ -187,7 +143,6 @@ const ShopContextProvider = (props) => {
     const value = {
         products,
         currency,
-        deliveryFeeBySize,
         search,
         setSearch,
         showSearch,
@@ -198,7 +153,7 @@ const ShopContextProvider = (props) => {
         updateQuantity,
         setCartItems,
         getCartAmount,
-        getDeliveryFee, // Hàm tính tổng phí giao hàng
+        delivery_fee, // Hàm tính tổng phí giao hàng
         backendURL,
         setToken,
         token,

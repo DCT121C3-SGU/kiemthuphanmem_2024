@@ -15,7 +15,6 @@ const Add = ({token}) => {
   const [description,setDescription] = useState('')
   const [category,setCategory] = useState('Coffee')
   const [price,setPrice] = useState('')
-  const [size,setSize] = useState([])
   const [bestseller,setBestseller] = useState(false)
   const [isSubmit,setIsSubmit] = useState(false)
 
@@ -33,7 +32,6 @@ const Add = ({token}) => {
       formData.append('description',description)
       formData.append('category',category)
       formData.append('price',price)
-      formData.append('sizes',JSON.stringify(size))
       formData.append('bestseller',bestseller)
       const response = await axios.post(backendUrl + "/api/product/add",formData,{headers:{token}})
       if (response.data.success){
@@ -127,20 +125,6 @@ const Add = ({token}) => {
         </div>
       </div>
 
-      <div>
-        <p>Size sản phẩm</p>
-        <div className="flex gap-3">
-          <div onClick={()=>setSize(prev => prev.includes('S') ? prev.filter(item => item !== 'S') : [...prev, 'S'])}>
-            <p className={`${size.includes('S') ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>S</p>
-          </div>
-          <div onClick={()=>setSize(prev => prev.includes('M') ? prev.filter(item => item !== 'M') : [...prev, 'M'])}>
-            <p className={`${size.includes('M') ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>M</p>
-          </div>
-          <div onClick={()=>setSize(prev => prev.includes('L') ? prev.filter(item => item !== 'L') : [...prev, 'L'])}>
-            <p className={`${size.includes('L') ? 'bg-pink-100' : 'bg-slate-200'} px-3 py-1 cursor-pointer`}>L</p>
-          </div>
-        </div>
-      </div>
       <div className="flex gap-2 mt-2 ">
         <input onChange={()=>setBestseller(prev => !prev)} checked={bestseller} className="cursor-pointer" type="checkbox" id="bestseller" />
         <label htmlFor="bestseller">Chuyển thành sản phẩm bán chạy</label>

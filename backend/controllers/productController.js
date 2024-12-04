@@ -6,7 +6,7 @@ const addProduct = async (req, res) => {
     try {
         console.log("req.files:", req.files); // Kiểm tra xem có file nào không
 
-        const { name, description, price, category, sizes, bestseller } = req.body;
+        const { name, description, price, category, bestseller } = req.body;
 
         const image1 = req.files.image1 && req.files.image1[0];
         const image2 = req.files.image2 && req.files.image2[0];
@@ -34,7 +34,6 @@ const addProduct = async (req, res) => {
             description,
             price: Number(price),
             category,
-            sizes: JSON.parse(sizes),
             bestseller: bestseller === 'true' ? true : false,
             images: imagesUrl, // Lưu mảng chứa url và public_id của ảnh
             date: Date.now(),

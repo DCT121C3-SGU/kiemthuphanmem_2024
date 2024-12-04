@@ -102,15 +102,24 @@ const List = ({ token }) => {
       {editingProduct && (
         <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-md shadow-md w-96">
-            <h2 className="text-xl mb-4">Edit Product</h2>
+            <h2 className="text-xl mb-4">Sửa sản phẩm</h2>
             <form onSubmit={handleEditSubmit}>
               <div className="mb-4">
-                <label htmlFor="name" className="block mb-2">Name</label>
+                <label htmlFor="name" className="block mb-2">Tên sản phẩm</label>
                 <input
                   type="text"
                   id="name"
                   value={productData.name}
                   onChange={(e) => setProductData({ ...productData, name: e.target.value })}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="name" className="block mb-2">Chi tiết sản phẩm</label>
+                <textarea
+                  id="name"
+                  value={productData.description}
+                  onChange={(e) => setProductData({ ...productData, description: e.target.value })}
                   className="border p-2 w-full"
                 />
               </div>
@@ -123,7 +132,7 @@ const List = ({ token }) => {
                 </select>
               </div>
               <div className="mb-4">
-                <label htmlFor="price" className="block mb-2">Price</label>
+                <label htmlFor="price" className="block mb-2">Giá</label>
                 <input
                   type="number"
                   id="price"
@@ -133,8 +142,8 @@ const List = ({ token }) => {
                 />
               </div>
               <div className="flex justify-between">
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">Save</button>
-                <button type="button" onClick={() => setEditingProduct(null)} className="bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
+                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">Lưu</button>
+                <button type="button" onClick={() => setEditingProduct(null)} className="bg-gray-500 text-white px-4 py-2 rounded-md">Hủy</button>
               </div>
             </form>
           </div>
