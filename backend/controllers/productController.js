@@ -114,29 +114,10 @@ const editProduct = async (req, res) => {
     try {
         const { productId, name, description, price, category, sizes, bestseller } = req.body;
 
-        const newImages = [req.files.image1, req.files.image2, req.files.image3, req.files.image4].filter(item => item !== undefined);
-
         const product = await productModel.findById(productId);
 
         if (!product) {
             return res.json({ success: false, message: "Không tìm thấy sản phẩm!" });
-        }
-        if (newImages.length > 0) {
-            const imagePublicIds = product.images.map(image => image.public_id);
-
-            await Promise.all(
-                imagePublicIds.map(async (public_id) => {
-                    await cloudinary.uploader.destroy(public_id);
-                })
-            );
-
-            const imagesUrl = await Promise.all(
-                newImages.map(async (item) => {
-                    const result = await cloudinary.uploader.upload(item[0].path, { resource_type: 'image' });
-                    return { url: result.secure_url, public_id: result.public_id };
-                })
-            );
-            product.images = imagesUrl;
         }
 
         product.name = name || product.name;
@@ -156,5 +137,5 @@ const editProduct = async (req, res) => {
 };
 
 
-export { listProduct, addProduct, removeProduct, singleProduct }
+export { listProduct, addProduct, removeProduct, singleProduct, editProduct }
 

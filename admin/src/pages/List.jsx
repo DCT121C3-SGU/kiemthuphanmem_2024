@@ -51,7 +51,7 @@ const List = ({ token }) => {
     e.preventDefault()
     try {
       const response = await axios.post(backendUrl + '/api/product/edit', {
-        id: editingProduct._id,
+        productId: editingProduct._id,
         ...productData,
       }, { headers: { token } })
       if (response.data.success) {
@@ -115,14 +115,12 @@ const List = ({ token }) => {
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="category" className="block mb-2">Category</label>
-                <input
-                  type="text"
-                  id="category"
-                  value={productData.category}
-                  onChange={(e) => setProductData({ ...productData, category: e.target.value })}
-                  className="border p-2 w-full"
-                />
+                <p className="mb-2">Phân loại sản phẩm</p>
+                <select onChange={(e)=>setProductData({ ...productData, category: e.target.value })} value={productData.category} className="w-full px-3 py-2">
+                  <option value="Coffee">Coffee</option>
+                  <option value="Bánh ngọt">Bánh ngọt</option>
+                  <option value="Trà">Trà</option>
+                </select>
               </div>
               <div className="mb-4">
                 <label htmlFor="price" className="block mb-2">Price</label>
