@@ -32,8 +32,8 @@ app.get("/", (req, res) => {
     res.send("API WORKING");
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log("server start on port: " + port);
 });
 
-export default app;
+export {app, server};

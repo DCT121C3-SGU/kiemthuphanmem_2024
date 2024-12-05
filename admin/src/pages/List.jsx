@@ -39,11 +39,13 @@ const List = ({ token }) => {
   }
 
   const editProduct = (product) => {
+    console.log("prL ", product);
     setEditingProduct(product)
     setProductData({
       name: product.name,
       category: product.category,
       price: product.price,
+      description: product.description,
     })
   }
 
@@ -69,6 +71,7 @@ const List = ({ token }) => {
 
   useEffect(() => {
     fetchList()
+    console.log(productData);
   }, [])
 
   return (
