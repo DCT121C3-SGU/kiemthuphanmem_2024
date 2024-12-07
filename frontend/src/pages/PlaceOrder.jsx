@@ -14,7 +14,7 @@ const PlaceOrder = () => {
     cartItems,
     setCartItems,
     getCartAmount,
-    getDeliveryFee,
+    delivery_fee,
     products,
   } = useContext(ShopContext);
   const [method, setMethod] = useState("cod");
@@ -35,73 +35,66 @@ const PlaceOrder = () => {
   };
   const navigate = useNavigate();
   const submitHandler = async (event) => {
-    const amount = getCartAmount() + getDeliveryFee();
+    const amount = getCartAmount() + delivery_fee;
     event.preventDefault();
     try {
       let orderItems = [];
       for (const items in cartItems) {
-        for (const item in cartItems[items]) {
-          if (cartItems[items][item] > 0) {
-            const itemInfo = structuredClone(
-              products.find((product) => product._id === items)
-            );
-            if (itemInfo) {
-              itemInfo.size = item;
-              itemInfo.quantity = cartItems[items][item];
-              orderItems.push(itemInfo);
-            }
+        const itemInfo = structuredClone(
+          products.find((product) => product._id === items)
+        );
+        if (itemInfo) {
+          itemInfo.quantity = cartItems[items];
+          orderItems.push(itemInfo);
+          
+          // Gọi API cập nhật số lượng sản phẩm sau khi tạo đơn hàng
+          const response = await axios.post(backendURL + "/api/product/update-quantity", {
+            productId: itemInfo._id,
+            quantity: itemInfo.quantity,
+          }, {
+            headers: { token }
+          });
+          if (!response.data.success) {
+            toast.error("Cập nhật số lượng sản phẩm thất bại!");
           }
         }
       }
-
+  
       let orderData = {
         address: formData,
         items: orderItems,
         amount: amount,
       };
-      switch (method) {
-        // API call for COD
-        case "cod":
-          const response = await axios.post(
-            backendURL + "/api/order/place",
-            orderData,
-            { headers: { token } }
-          );
-          if (response.data.success) {
-            setCartItems({});
-            navigate("/orders");
-          } else {
-            toast.error(response.data.message);
-          }
-          break;
-        case "momo":
-          console.log(orderData);
-          const momoResponse = await axios.post(
-            backendURL + "/api/order/momo",
-            orderData,
-            { headers: { token } }
-          );
-          if (momoResponse.data.success) {
-            // Redirect to MoMo payment URL
-            window.location.href = momoResponse.data.payUrl;
-          } else {
-            toast.error(momoResponse.data.message);
-          }
-          break;
-
-        default:
-          break;
+  
+      // Gửi đơn hàng
+      const orderResponse = await axios.post(
+        backendURL + "/api/order/place",
+        orderData,
+        { headers: { token } }
+      );
+      if (orderResponse.data.success) {
+        setCartItems({});
+        navigate("/orders");
+      } else {
+        toast.error(orderResponse.data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      toast.error("Đặt hàng không thành công.");
+    }
   };
+  
 
   const getUserData = async () => {
     try {
-      const response = await axios.post(backendURL + "/api/user/profile", {}, {
-        headers: { token }
-      });
+      const response = await axios.post(
+        backendURL + "/api/user/profile",
+        {},
+        {
+          headers: { token },
+        }
+      );
       if (response.data.success) {
-
         const { email, address, phone, name } = response.data.userData;
         const nameParts = name.split(" ");
         const firstName = nameParts.slice(0, nameParts.length - 1).join(" ");
@@ -115,8 +108,8 @@ const PlaceOrder = () => {
           city: "",
           district: "",
           ward: "",
-          phone
-        })
+          phone,
+        });
       }
     } catch (error) {
       console.log(error);
@@ -125,7 +118,7 @@ const PlaceOrder = () => {
 
   useEffect(() => {
     getUserData();
-  },[])
+  }, [token]);
 
   return (
     <form
@@ -222,31 +215,18 @@ const PlaceOrder = () => {
         <div className="mt-12">
           <Title text1={"PHƯƠNG THỨC"} text2={"THANH TOÁN"} />
           {/*Payment Method Selection */}
-          <div className="flex gap-3 flex-col lg:flex-row">
-            <div
-              onClick={() => setMethod("momo")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "momo" ? "bg-green-400" : ""
-                }`}
-              ></p>
-              <img className="h-5 mx-4" src={assets.momo_icon} alt="" />
-            </div>
-            <div
-              onClick={() => setMethod("cod")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "cod" ? "bg-green-400" : ""
-                }`}
-              ></p>
-              <p className="text-gray-500 text-sm font-medium mx-4">
-                Thanh toán khi nhận hàng
-              </p>
-            </div>
+          <div
+            onClick={() => setMethod("cod")}
+            className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
+          >
+            <p
+              className={`min-w-3.5 h-3.5 border rounded-full ${
+                method === "cod" ? "bg-green-400" : ""
+              }`}
+            ></p>
+            <p className="text-gray-500 text-sm font-medium mx-4">
+              Thanh toán khi nhận hàng
+            </p>
           </div>
           <div className="w-full text-end mt-8">
             <button

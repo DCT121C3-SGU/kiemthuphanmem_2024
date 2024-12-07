@@ -39,13 +39,13 @@ const List = ({ token }) => {
   }
 
   const editProduct = (product) => {
-    console.log("prL ", product);
     setEditingProduct(product)
     setProductData({
       name: product.name,
       category: product.category,
       price: product.price,
       description: product.description,
+      quantity: product.quantity
     })
   }
 
@@ -79,22 +79,24 @@ const List = ({ token }) => {
       <p className="mb-2">DANH SÁCH SẢN PHẨM</p>
       <div className="flex flex-col gap-2">
         {/* ----- LIST TABLE TITLE ----- */}
-        <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm">
-          <b>Image</b>
-          <b>Name</b>
-          <b>Category</b>
-          <b>Price</b>
-          <b className="text-center">Action</b>
+        <div className="hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm">
+          <b>Hình ảnh</b>
+          <b>Tên sản phẩm</b>
+          <b>Phân loại</b>
+          <b>Giá</b>
+          <p>Số lượng</p>
+          <b className="text-center">Hành động</b>
         </div>
         {/* ----- LIST TABLE ITEMS ----- */}
         {list.map((item, index) => (
-          <div className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm" key={index}>
+          <div className="grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm" key={index}>
             <img className="w-12" src={item.images[0].url} alt="" />
             <p>{item.name}</p>
             <p>{item.category}</p>
             <p>{item.price} {currency}</p>
+            <p>{item.quantity}</p>
             <div className="flex justify-around items-center">
-              <p onClick={() => editProduct(item)} className="text-right md:text-center cursor-pointer text-lg text-blue-600">Edit</p>
+              <p onClick={() => editProduct(item)} className="text-right md:text-center cursor-pointer text-lg text-blue-600">Chỉnh sửa</p>
               <p onClick={() => removeProduct(item._id)} className="text-right md:text-center cursor-pointer text-lg text-red-600">X</p>
             </div>
           </div>
@@ -141,6 +143,16 @@ const List = ({ token }) => {
                   id="price"
                   value={productData.price}
                   onChange={(e) => setProductData({ ...productData, price: e.target.value })}
+                  className="border p-2 w-full"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="price" className="block mb-2">Số lượng</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  value={productData.quantity}
+                  onChange={(e) => setProductData({ ...productData, quantity: e.target.value })}
                   className="border p-2 w-full"
                 />
               </div>

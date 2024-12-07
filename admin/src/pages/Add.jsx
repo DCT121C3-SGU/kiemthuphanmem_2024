@@ -17,6 +17,7 @@ const Add = ({token}) => {
   const [price,setPrice] = useState('')
   const [bestseller,setBestseller] = useState(false)
   const [isSubmit,setIsSubmit] = useState(false)
+  const [quantity,setQuantity] = useState(0)
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
@@ -33,6 +34,7 @@ const Add = ({token}) => {
       formData.append('category',category)
       formData.append('price',price)
       formData.append('bestseller',bestseller)
+      formData.append('quantity',quantity)
       const response = await axios.post(backendUrl + "/api/product/add",formData,{headers:{token}})
       if (response.data.success){
         toast.success(response.data.message)
@@ -40,6 +42,7 @@ const Add = ({token}) => {
         setDescription('')
         setCategory('Coffee')
         setPrice('')
+        setQuantity(0)
         setBestseller(false)
         setImage1(false)
         setImage2(false)
@@ -121,6 +124,16 @@ const Add = ({token}) => {
             placeholder="Nhập tại đây"
             onChange={(e)=>setPrice(e.target.value)}
             value={price}
+          />
+        </div>
+        <div>
+          <p className="mb-2">Số lượng sản phẩm</p>
+          <input
+            className="w-full px-3 py-2 sm:w-[120px]"
+            type="number"
+            placeholder="Nhập tại đây"
+            onChange={(e)=>setQuantity(e.target.value)}
+            value={quantity}
           />
         </div>
       </div>

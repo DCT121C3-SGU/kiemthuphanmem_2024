@@ -19,6 +19,7 @@ const placeOrder = async (req, res) => {
       orderId: "COD" + new Date().getTime(),
       date: Date.now(),
     };
+    console.log(orderData);
     const newOrder = new orderModel(orderData);
     await newOrder.save();
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
@@ -198,4 +199,34 @@ const updateStatus = async (req, res) => {
   }
 };
 
-export { placeOrder, placeOrderMoMo, allOrders, userOrders, updateStatus, callbackMomo, transactionStatus };
+const cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    const order = await orderModel.findOne({ orderId });
+    console.log(order);
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Đơn hàng không tồn tại." });
+    }
+    if (order.status === "Đã giao") {
+      return res.status(400).json({ success: false, message: "Đơn hàng đã được giao không thể hủy." });
+    }
+    order.status = "Đã hủy";
+    await order.save();
+
+    for (let item of order.items) {
+      const product = item.productId;
+
+      product.quantity += item.quantity;
+      await product.save();
+    }
+
+    res.status(200).json({ success: true, message: "Đơn hàng đã được hủy thành công và số lượng sản phẩm đã được cập nhật." });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
+export { placeOrder, placeOrderMoMo, allOrders, userOrders, updateStatus, callbackMomo, transactionStatus, cancelOrder };

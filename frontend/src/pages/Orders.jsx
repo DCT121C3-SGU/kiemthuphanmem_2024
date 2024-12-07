@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 const Orders = () => {
   const { backendURL, token, currency } = useContext(ShopContext);
   const [orderData, setOrderData] = useState([]);
+  const [orderIds, setOrderIds] = useState([]);
   const [booking, setBooking] = useState([]);
   const [eventBooking, setEventBooking] = useState([]);
   const loadOrderData = async () => {
@@ -21,6 +22,7 @@ const Orders = () => {
       );
       if (response.data.success) {
         let allOrdersItem = [];
+        let orderIds = [];
         response.data.orders.forEach((order) => {
           if (Array.isArray(order.items)) {
             order.items.forEach((item) => {
@@ -33,12 +35,14 @@ const Orders = () => {
                 date: order.date,
               });
             });
+            orderIds.push(order._id);
           } else {
             console.error("order.items is not an array:", order);
           }
         });
 
         setOrderData(allOrdersItem.reverse());
+        setOrderIds(orderIds);
       }
     } catch (error) {}
   };
@@ -83,6 +87,30 @@ const Orders = () => {
     toast.success("Đã cập nhập trạng thái đơn hàng");
   };
 
+  const cancelOrder = async (orderId) => {
+    console.log(orderId);
+    // try {
+    //   const response = await axios.post(
+    //     backendURL + "/api/order/cancel-order",
+    //     { orderId },
+    //   );
+    //   console.log(response);
+    //   if (response.data.success) {
+    //     toast.success("Đơn hàng đã được hủy thành công.");
+    //     loadOrderData(); // Load lại dữ liệu sau khi hủy
+    //   } else {
+    //     toast.error("Hủy đơn hàng không thành công.");
+    //   }
+    // } catch (error) {
+    //   toast.error("Đã xảy ra lỗi khi hủy đơn hàng.");
+    //   console.log(error);
+    // }
+    const re = await axios.post(backendURL + "/api/order/cancel-order", {
+      orderId,
+    });
+    console.log(re);
+  };
+
   useEffect(() => {
     loadOrderData();
     if (token) {
@@ -93,7 +121,14 @@ const Orders = () => {
 
   return (
     <div className="border-t pt-16">
-      <span className="text-sm text-center"><i>Với các đơn hàng thanh toán Momo, nếu đơn hàng các bạn thanh toán không thành công, chúng tôi sẽ gọi cho bạn để xác nhận và tiến hành phương thức thanh toán khác cho bạn. Nếu bạn không nhắc máy, chúng tôi sẽ <strong>hủy</strong>  đơn hàng của bạn</i></span>
+      <span className="text-sm text-center">
+        <i>
+          Với các đơn hàng thanh toán Momo, nếu đơn hàng các bạn thanh toán
+          không thành công, chúng tôi sẽ gọi cho bạn để xác nhận và tiến hành
+          phương thức thanh toán khác cho bạn. Nếu bạn không nhắc máy, chúng tôi
+          sẽ <strong>hủy</strong> đơn hàng của bạn
+        </i>
+      </span>
       <div className="text-2xl mt-8">
         <Title text1={"ĐƠN HÀNG"} text2={"CỦA TÔI"} />
       </div>
@@ -112,12 +147,10 @@ const Orders = () => {
                     {item.price} {currency}
                   </p>
                   <p>Số lượng: {item.quantity}</p>
-                  <p>Size: {item.size}</p>
                 </div>
                 <p className="mt-1">
                   Ngày đặt hàng:{" "}
                   <span className="text-gray-400">
-                    {" "}
                     {new Date(item.date).toLocaleDateString("vi-VN", {
                       year: "numeric",
                       month: "long",
@@ -128,7 +161,6 @@ const Orders = () => {
                 <p className="mt-1">
                   Tổng giá trị đơn hàng:{" "}
                   <span className="text-gray-400">
-                    {" "}
                     {item.amount} {currency}
                   </span>
                 </p>
@@ -151,15 +183,23 @@ const Orders = () => {
                 ></p>
                 <p className="text-sm md:text-base">{item.status}</p>
               </div>
-              <button
-                onClick={() => {
-                  loadOrderData();
-                  checkButtonSubmit();
-                }}
-                className="border px-4 py-2 text-sm font-medium rounded-sm"
-              >
-                Kiểm tra trạng thái đơn hàng
-              </button>
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={() => {
+                    loadOrderData();
+                    checkButtonSubmit();
+                  }}
+                  className="border px-4 py-2 text-sm font-medium rounded-sm"
+                >
+                  Kiểm tra trạng thái
+                </button>
+                <button
+                  className="border px-4 py-2 text-sm font-medium rounded-sm bg-red-500 text-white"
+                  onClick={() => cancelOrder(orderIds[index])} // Pass the correct orderId here
+                >
+                  HỦY ĐƠN HÀNG
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -251,9 +291,7 @@ const Orders = () => {
                 {item.eventData.nameEvent}
               </p>
               <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
-                <p>
-                  {item.eventData.description}
-                </p>
+                <p>{item.eventData.description}</p>
               </div>
               <p className="mt-1">
                 Số lượng:{" "}

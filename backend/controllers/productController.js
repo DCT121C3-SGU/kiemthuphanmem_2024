@@ -6,7 +6,7 @@ const addProduct = async (req, res) => {
     try {
         console.log("req.files:", req.files); // Kiểm tra xem có file nào không
 
-        const { name, description, price, category, bestseller } = req.body;
+        const { name, description, price, category, bestseller, quantity } = req.body;
 
         const image1 = req.files.image1 && req.files.image1[0];
         const image2 = req.files.image2 && req.files.image2[0];
@@ -37,6 +37,7 @@ const addProduct = async (req, res) => {
             bestseller: bestseller === 'true' ? true : false,
             images: imagesUrl, // Lưu mảng chứa url và public_id của ảnh
             date: Date.now(),
+            quantity: Number(quantity)
         };
 
         console.log("Product data to save:", productData);
@@ -111,7 +112,7 @@ const singleProduct = async(req, res) => {
 // function for edit product
 const editProduct = async (req, res) => {
     try {
-        const { productId, name, description, price, category, sizes, bestseller } = req.body;
+        const { productId, name, description, price, category, sizes, bestseller, quantity } = req.body;
 
         const product = await productModel.findById(productId);
 
@@ -125,6 +126,7 @@ const editProduct = async (req, res) => {
         product.category = category || product.category;
         product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
         product.bestseller = bestseller === 'true' ? true : false;
+        product.quantity = quantity ? Number(quantity) : product.quantity;
 
         await product.save();
 
@@ -135,6 +137,42 @@ const editProduct = async (req, res) => {
     }
 };
 
+const getAvailableQuantity = async (req, res) => {
+    try {
+        const { productId } = req.body;
+        const product = await productModel.findById(productId);
 
-export { listProduct, addProduct, removeProduct, singleProduct, editProduct }
+        if (!product) {
+            return res.json({ success: false, message: "Không tìm thấy sản phẩm!" });
+        }
+
+        res.json({ success: true, quantity: product.quantity });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+const updateQuantity = async (req, res) => {
+    try {
+        const { productId, quantity } = req.body;
+        const product = await productModel.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm!" });
+        }
+
+        product.quantity -= quantity;
+        await product.save();
+
+        return res.status(200).json({ success: true, message: "Cập nhật số lượng sản phẩm thành công!" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: "Đã xảy ra lỗi" });
+    }
+}
+
+
+
+export { listProduct, addProduct, removeProduct, singleProduct, editProduct, getAvailableQuantity, updateQuantity }
 

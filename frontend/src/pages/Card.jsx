@@ -5,11 +5,14 @@ import { assets } from "../assets/frontend_assets/assets";
 import CartTotal from "../components/CartTotal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Card = () => {
-  const { products, currency, cartItems, updateQuantity } =
+  const { products, currency, cartItems, updateQuantity, backendURL } =
     useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
+  const [amount, setAmount] = useState("");
+  const [maxQuantity, setMaxQuantity] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,8 +22,28 @@ const Card = () => {
         quantity,
       }));
       setCartData(tempData);
+
+      // Lấy maxQuantity từ backend cho mỗi sản phẩm trong giỏ hàng
+      tempData.forEach(async (item) => {
+        try {
+          const response = await axios.post(
+            `${backendURL}/api/product/quantity`,
+            {
+              productId: item._id,
+            }
+          );
+          if (response.data.success) {
+            setMaxQuantity((prev) => ({
+              ...prev,
+              [item._id]: response.data.quantity,
+            }));
+          }
+        } catch (error) {
+          console.error("Lỗi khi lấy số lượng sản phẩm:", error);
+        }
+      });
     }
-  }, [cartItems, products]);
+  }, [cartItems, products, backendURL]);
 
   return (
     <div className="border-t pt-14">
@@ -32,6 +55,8 @@ const Card = () => {
           const productData = products.find(
             (product) => product._id === item._id
           );
+          const max = maxQuantity[item._id] || 2; // Mặc định là 2 nếu không lấy được max
+
           return (
             <div
               key={index}
@@ -52,17 +77,31 @@ const Card = () => {
                   </p>
                 </div>
               </div>
-              <input
-                onChange={(e) =>
-                  e.target.value === "" || e.target.value === "0"
-                    ? null
-                    : updateQuantity(item._id, Number(e.target.value))
-                }
-                className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
-                type="number"
-                min={1}
-                defaultValue={item.quantity}
-              />
+              <div className="flex items-center gap-2">
+                <input
+                  onChange={(e) => {
+                    let value = Number(e.target.value);
+                    if (value === "" || value === "0") {
+                      return;
+                    }
+                    if (value > max) {
+                      value = max;
+                      e.target.value = max;
+                    }
+
+                    updateQuantity(item._id, value);
+                  }}
+                  className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
+                  type="number"
+                  min={1}
+                  max={max}
+                  defaultValue={item.quantity}
+                />
+                <span className="text-sm">
+                  Hàng còn trong kho: {max}
+                </span>
+              </div>
+
               <img
                 onClick={() => updateQuantity(item._id, 0)}
                 className="w-4 mr-4 sm:w-5 cursor-pointer"
