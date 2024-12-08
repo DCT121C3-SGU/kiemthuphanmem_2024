@@ -1,5 +1,6 @@
 import userModel from "../models/userModel.js";
 import orderModel from "../models/orderModel.js";
+import productModel from "../models/productModel.js";
 import crypto from "crypto";
 import axios from "axios";
 import { url } from "inspector";
@@ -201,9 +202,9 @@ const updateStatus = async (req, res) => {
 
 const cancelOrder = async (req, res) => {
   try {
-    const { orderId } = req.body;
-    const order = await orderModel.findOne({ orderId });
-    console.log(order);
+    const { orderIds } = req.body;
+    const order = await orderModel.findOne({ _id: orderIds });
+    // console.log("orderIds", orderIds); 
 
     if (!order) {
       return res.status(404).json({ success: false, message: "Đơn hàng không tồn tại." });
@@ -214,14 +215,13 @@ const cancelOrder = async (req, res) => {
     order.status = "Đã hủy";
     await order.save();
 
-    for (let item of order.items) {
-      const product = item.productId;
-
-      product.quantity += item.quantity;
-      await product.save();
+    for (let i of order.items) {
+      // const product = await productModel.findById(i._id);
+      await productModel.findByIdAndUpdate(i._id, { $inc: { quantity: i.quantity } });
+      console.log("đã cập nhập số lượng sản phẩm");
     }
 
-    res.status(200).json({ success: true, message: "Đơn hàng đã được hủy thành công và số lượng sản phẩm đã được cập nhật." });
+    res.status(200).json({ success: true, message: "Đơn hàng đã được hủy thành công" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

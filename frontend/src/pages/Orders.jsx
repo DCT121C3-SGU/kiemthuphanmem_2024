@@ -3,6 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { assets } from "../assets/frontend_assets/assets";
 
 const Orders = () => {
   const { backendURL, token, currency } = useContext(ShopContext);
@@ -21,27 +22,13 @@ const Orders = () => {
         { headers: { token } }
       );
       if (response.data.success) {
-        let allOrdersItem = [];
+        setOrderData(response.data.orders);
         let orderIds = [];
         response.data.orders.forEach((order) => {
-          if (Array.isArray(order.items)) {
-            order.items.forEach((item) => {
-              allOrdersItem.push({
-                ...item,
-                amount: order.amount,
-                status: order.status,
-                payment: order.payment,
-                paymentMethod: order.paymentMethod,
-                date: order.date,
-              });
-            });
-            orderIds.push(order._id);
-          } else {
-            console.error("order.items is not an array:", order);
-          }
+          orderIds.push(order._id);
         });
 
-        setOrderData(allOrdersItem.reverse());
+        // setOrderData(allOrdersItem.reverse());
         setOrderIds(orderIds);
       }
     } catch (error) {}
@@ -87,28 +74,23 @@ const Orders = () => {
     toast.success("Đã cập nhập trạng thái đơn hàng");
   };
 
-  const cancelOrder = async (orderId) => {
-    console.log(orderId);
-    // try {
-    //   const response = await axios.post(
-    //     backendURL + "/api/order/cancel-order",
-    //     { orderId },
-    //   );
-    //   console.log(response);
-    //   if (response.data.success) {
-    //     toast.success("Đơn hàng đã được hủy thành công.");
-    //     loadOrderData(); // Load lại dữ liệu sau khi hủy
-    //   } else {
-    //     toast.error("Hủy đơn hàng không thành công.");
-    //   }
-    // } catch (error) {
-    //   toast.error("Đã xảy ra lỗi khi hủy đơn hàng.");
-    //   console.log(error);
-    // }
-    const re = await axios.post(backendURL + "/api/order/cancel-order", {
-      orderId,
-    });
-    console.log(re);
+  const cancelOrder = async (id) => {
+    console.log(id);
+    try {
+      const response = await axios.post(
+        backendURL + "/api/order/cancel-order",
+        { orderIds: id }
+      );
+      if (response.data.success) {
+        toast.success("Đơn hàng đã được hủy thành công.");
+        loadOrderData();
+      } else {
+        toast.error("Hủy đơn hàng không thành công.");
+      }
+    } catch (error) {
+      toast.error("Đã xảy ra lỗi khi hủy đơn hàng.");
+      // console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -139,15 +121,14 @@ const Orders = () => {
             className="py-4 border-t border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
           >
             <div className="flex items-start gap-6 text-sm">
-              <img className="w-16 sm:w-20" src={item.images[0].url} alt="" />
+              <img className="w-16 sm:w-20" src={assets.order_icon} alt="" />
               <div>
-                <p className="sm:text-base font-medium">{item.name}</p>
-                <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
-                  <p>
-                    {item.price} {currency}
-                  </p>
-                  <p>Số lượng: {item.quantity}</p>
-                </div>
+                <p className="mt-1">
+                  Mã đơn hàng:{" "}
+                  <span className="text-gray-400">
+                    {item.orderId ? item.orderId : "Chưa có mã đơn hàng"}
+                  </span>
+                </p>
                 <p className="mt-1">
                   Ngày đặt hàng:{" "}
                   <span className="text-gray-400">
@@ -164,10 +145,19 @@ const Orders = () => {
                     {item.amount} {currency}
                   </span>
                 </p>
-                <p className="mt-1">
-                  Phương thức thanh toán:{" "}
-                  <span className="text-gray-400"> {item.paymentMethod}</span>
-                </p>
+                {item.items.map((product, index) => (
+                  <div key={index}>
+                    <p className="mt-1">
+                      {product.name} x {product.quantity}{" "}
+                      <a
+                        href={`/product/${product._id}`}
+                        className="text-blue-500"
+                      >
+                        Click here
+                      </a>
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="md:w-1/2 flex justify-between">
@@ -194,8 +184,13 @@ const Orders = () => {
                   Kiểm tra trạng thái
                 </button>
                 <button
-                  className="border px-4 py-2 text-sm font-medium rounded-sm bg-red-500 text-white"
-                  onClick={() => cancelOrder(orderIds[index])} // Pass the correct orderId here
+                  className={`border px-4 py-2 text-sm font-medium rounded-sm ${
+                    item.status === "Đã giao" || item.status === "Đã hủy"
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-red-500 text-white"
+                  }`}
+                  onClick={() => cancelOrder(item._id)}
+                  disabled={item.status === "Đã giao" || item.status === "Đã hủy"}
                 >
                   HỦY ĐƠN HÀNG
                 </button>
