@@ -18,7 +18,7 @@ describe('Order Flow Integration Test with Mock Data', function () {
     mockUser = {
       _id: mockUserId,
       name: 'Test User',
-      email: 'testuser@example.com',
+      email: 'testuser1@example.com',
       phone: '123456789',
       address: '123 Main Street',
       password: 'password123',

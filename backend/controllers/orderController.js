@@ -20,7 +20,6 @@ const placeOrder = async (req, res) => {
       orderId: "COD" + new Date().getTime(),
       date: Date.now(),
     };
-    console.log(orderData);
     const newOrder = new orderModel(orderData);
     await newOrder.save();
     await userModel.findByIdAndUpdate(userId, { cartData: {} });

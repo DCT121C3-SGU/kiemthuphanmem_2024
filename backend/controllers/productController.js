@@ -4,7 +4,6 @@ import productModel from '../models/productModel.js';
 // function for add product
 const addProduct = async (req, res) => {
     try {
-        console.log("req.files:", req.files); // Kiểm tra xem có file nào không
 
         const { name, description, price, category, bestseller, quantity } = req.body;
 
@@ -12,10 +11,7 @@ const addProduct = async (req, res) => {
         const image2 = req.files.image2 && req.files.image2[0];
         const image3 = req.files.image3 && req.files.image3[0];
         const image4 = req.files.image4 && req.files.image4[0];
-
-        // Kiểm tra lại mảng image có dữ liệu hay không
         const images = [image1, image2, image3, image4].filter((item) => item !== undefined);
-        console.log("Filtered images:", images); // Kiểm tra dữ liệu của mảng images
 
         if (images.length === 0) {
             return res.json({ success: false, message: "Không có hình ảnh nào để tải lên!" });
@@ -39,8 +35,6 @@ const addProduct = async (req, res) => {
             date: Date.now(),
             quantity: Number(quantity)
         };
-
-        console.log("Product data to save:", productData);
 
         const product = new productModel(productData);
         await product.save();
