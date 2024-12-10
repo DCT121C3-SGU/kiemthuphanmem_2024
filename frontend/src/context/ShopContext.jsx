@@ -110,6 +110,20 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  const getRoomData = async () => {
+    try {
+        const {data} = await axios.get(backendURL + '/api/room/list')
+        if (data.success) {
+            setRoomList(data.rooms)
+        } else {
+            toast.error(data.message)
+        }
+    } catch (error) {
+        console.log(error)
+        toast.error(error.message)
+    }
+}
+
   const getEventList = async () => {
     try {
       const response = await axios.get(`${backendURL}/api/event/list`);
@@ -146,6 +160,7 @@ const ShopContextProvider = (props) => {
     getProducts();
     getRoomList();
     getEventList();
+    getRoomData();
   }, []);
 
   useEffect(() => {
@@ -174,6 +189,7 @@ const ShopContextProvider = (props) => {
     token,
     roomList,
     eventList,
+    getRoomData,
   };
 
   return (

@@ -2,12 +2,16 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import RelatedProducts from "../components/RelatedProducts";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext);
+  const { products, currency, addToCart, backendURL } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState("");
+  const [quantity, setQuantity] = useState("");
+  
 
   const fetchProductData = async () => {
     products.map((item) => {
@@ -17,10 +21,28 @@ const Product = () => {
         return null;
       }
     });
+
+
   };
+
+  const checkQuantity = async () => {
+    try {
+      const response = await axios.get(
+        `${backendURL}/api/product/check-quantity/${productId}`
+      );
+      if (response.data.success) {
+        setQuantity(response.data.quantity);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+    }
+  };
+  
 
   useEffect(() => {
     fetchProductData();
+    checkQuantity();
   }, [productId, products]);
 
   return productData ? (
@@ -55,9 +77,19 @@ const Product = () => {
           <p className="mt-5 text-gray-500 md:w-4/5">
             {productData.description}
           </p>
-          <button onClick={() => addToCart(productData._id)} className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700">
-            THÊM VÀO GIỎ HÀNG
-          </button>
+
+          {/* Hiển thị nút hoặc thông báo "Hết hàng" */}
+          {quantity ? (
+            <button
+              onClick={() => addToCart(productData._id)}
+              className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
+            >
+              THÊM VÀO GIỎ HÀNG
+            </button>
+          ) : (
+            <p className="text-red-500 font-medium">Hết hàng</p>
+          )}
+
           <hr className="mt-8 sm:w-4/5" />
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
             <p>100% nguyên liệu nguyên chất</p>
@@ -69,20 +101,23 @@ const Product = () => {
 
       {/* -------------------- PRODUCT INFO -------------------- */}
 
-        <div className="mt-20">
-              <div className="flex">
-                <b className="border px-5 py-3 text-sm">Chi tiết sản phẩm</b>
-              </div>
-              <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti molestias deserunt dicta ipsa, a architecto fuga molestiae voluptates at nulla necessitatibus dolore nihil veniam natus impedit harum blanditiis quo officia!</p>
-              </div>
+      <div className="mt-20">
+        <div className="flex">
+          <b className="border px-5 py-3 text-sm">Chi tiết sản phẩm</b>
         </div>
+        <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti
+            molestias deserunt dicta ipsa, a architecto fuga molestiae
+            voluptates at nulla necessitatibus dolore nihil veniam natus impedit
+            harum blanditiis quo officia!
+          </p>
+        </div>
+      </div>
 
-    {/* -------------------- DISPLAY RELATED PRODUCTS -------------------- */}
+      {/* -------------------- DISPLAY RELATED PRODUCTS -------------------- */}
 
-    <RelatedProducts category={productData.category} />
-
-
+      <RelatedProducts category={productData.category} />
     </div>
   ) : (
     <div className="opacity-0"></div>

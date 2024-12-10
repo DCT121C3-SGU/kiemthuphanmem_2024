@@ -69,7 +69,7 @@ const Room = () => {
             time: formattedTime,
           });
         }
-        currentDate.setHours(currentDate.getHours() + 1); // change to increment by 1 hour
+        currentDate.setHours(currentDate.getHours() + 2); // change to increment by 1 hour
       }
       setRoomSlot((prev) => [...prev, timeSlots]);
     }

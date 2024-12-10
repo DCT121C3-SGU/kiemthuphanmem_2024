@@ -166,7 +166,27 @@ const updateQuantity = async (req, res) => {
     }
 }
 
+const productQuantity = async (req, res) => {
+    try {
+        const { productId } = req.params;
+        const product = await productModel.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy sản phẩm!" });
+        }
+
+        if (product.quantity <= 0){
+            return res.status(400).json({ success: false, message: "Sản phẩm đã hết hàng!" });
+        }
+
+        return res.status(200).json({ success: true, quantity: product.quantity });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: "Đã xảy ra lỗi" });
+    }
+}
 
 
-export { listProduct, addProduct, removeProduct, singleProduct, editProduct, getAvailableQuantity, updateQuantity }
+export { listProduct, addProduct, removeProduct, singleProduct, editProduct, getAvailableQuantity, updateQuantity, productQuantity }
+
 
