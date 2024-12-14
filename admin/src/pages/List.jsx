@@ -51,6 +51,10 @@ const List = ({ token }) => {
 
   const handleEditSubmit = async (e) => {
     e.preventDefault()
+    if (!productData.name || !productData.category || !productData.price || !productData.quantity || !productData.description) {
+      toast.error("Vui lòng điền đầy đủ thông tin sản phẩm!");
+      return;
+    }
     try {
       const response = await axios.post(backendUrl + '/api/product/edit', {
         productId: editingProduct._id,

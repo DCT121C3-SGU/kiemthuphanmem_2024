@@ -14,6 +14,13 @@ const loginUser = async(req, res) => {
     try {
         const { email, password } = req.body
         const user = await userModel.findOne({email})
+        if (!email) {
+            return res.status(400).json({ success: false, message: "Email không được bỏ trống" });
+        }
+        
+        if (!password) {
+            return res.status(400).json({ success: false, message: "Mật khẩu không được bỏ trống" });
+        }
         if (!user) {
             return res.status(404).json({success:false, message:"Tài khoản không tồn tại" })
         }
@@ -23,7 +30,7 @@ const loginUser = async(req, res) => {
             res.status(200).json({success : true , message: "Đăng nhập thành công", token });
         }
         else{
-            res.status(401).json({success:false, message:"Bạn ơi hình như có gì đó sai sai!"})
+            res.status(401).json({success:false, message:"Tài khoản hoặc mật khẩu không đúng"})
         }
     } catch (error) {
         console.log(error);

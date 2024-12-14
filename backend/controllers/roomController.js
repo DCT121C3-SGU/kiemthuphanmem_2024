@@ -25,6 +25,35 @@ const addRoom = async (req, res) => {
     }
 }
 
+const updateRoom = async (req, res) => {
+    try {
+        const { id, room_name, room_type, room_price, room_status } = req.body;
+
+        const room = await roomModel.findById(id);
+        if (!room) {
+            return res.status(404).json({ success: false, message: "Phòng không tồn tại" });
+        }
+
+        room.room_name = room_name || room.room_name;
+        room.room_type = room_type || room.room_type;
+        room.room_price = room_price || room.room_price;
+        room.room_status = room_status !== undefined ? room.room_status : room.room_status;
+
+        const updatedRoom = await room.save();
+
+        res.json({
+            success: true,
+            message: "Cập nhật phòng thành công",
+            data: updatedRoom,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+
+
 const listRoom = async (req, res) => {
     try {
         const rooms = await roomModel.find({})
@@ -112,4 +141,4 @@ const bookingCancel = async (req, res) => {
 
 
 
-export { listRoom, addRoom, bookingRoom, listBooking, userBooking, bookingCancel }
+export { listRoom, addRoom, bookingRoom, listBooking, userBooking, bookingCancel, updateRoom }

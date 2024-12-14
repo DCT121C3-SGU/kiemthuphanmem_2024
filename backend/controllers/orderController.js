@@ -10,6 +10,25 @@ import { raw } from "express";
 const placeOrder = async (req, res) => {
   try {
     const { userId, items, amount, address } = req.body;
+    // console.log(req.body);
+
+    if (items.length === 0) {
+      return res.status(400).json({ success: false, message: "Không có sản phẩm trong giỏ hàng" });
+    }
+    if (address.address === "") {
+      return res.status(400).json({ success: false, message: "Địa chỉ không được để trống" });
+    }
+    if (address.firstName === "" || address.lastName === "") {
+      return res.status(400).json({ success: false, message: "Họ và Tên không được để trống" });
+    }
+    if (address.city === "" || address.district === "" || address.ward === "") {
+      return res.status(400).json({ success: false, message: "Vui lòng chọn đầy đủ địa chỉ" });
+    }
+    if (address.phone === "") {
+      return res.status(400).json({ success: false, message: "Số điện thoại không được để trống" });
+    }
+    
+    
     const orderData = {
       userId,
       items,
@@ -20,8 +39,8 @@ const placeOrder = async (req, res) => {
       orderId: "COD" + new Date().getTime(),
       date: Date.now(),
     };
-    const newOrder = new orderModel(orderData);
-    await newOrder.save();
+    // const newOrder = new orderModel(orderData);
+    // await newOrder.save();
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
     res.status(200).json({ success: true, message: "Đặt hàng thành công" });
   } catch (error) {

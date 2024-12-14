@@ -47,7 +47,6 @@ const PlaceOrder = () => {
           itemInfo.quantity = cartItems[items];
           orderItems.push(itemInfo);
           
-          // Gọi API cập nhật số lượng sản phẩm sau khi tạo đơn hàng
           const response = await axios.post(backendURL + "/api/product/update-quantity", {
             productId: itemInfo._id,
             quantity: itemInfo.quantity,
@@ -79,8 +78,8 @@ const PlaceOrder = () => {
         toast.error(orderResponse.data.message);
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Đặt hàng không thành công.");
+      console.log(error.orderResponse.data.message);
+      toast.error(error.orderResponse.data.message);
     }
   };
   

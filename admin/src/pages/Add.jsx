@@ -22,6 +22,15 @@ const Add = ({token}) => {
   const onSubmitHandler = async (e) => {
     e.preventDefault()
     if (isSubmit) return
+    if (!price || price <= 0) {
+      toast.error("Giá sản phẩm không được để trống hoặc nhỏ hơn 0!");
+      return;
+    }
+  
+    if (!quantity || quantity <= 0) {
+      toast.error("Số lượng sản phẩm không được để trống hoặc nhỏ hơn 0!");
+      return;
+    }
     setIsSubmit(true)
     try {
       const formData = new FormData()
