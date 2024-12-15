@@ -71,11 +71,11 @@ const Product = () => {
         {/* -------------------- PRODUCT INFO -------------------- */}
         <div className="flex-1">
           <h1 className="font-medium text-2xl mt-2">{productData.name}</h1>
-          <p className="mt-5 text-3xl font-medium">
+          <p className="mt-5 text-3xl font-bold">
             {productData.price} {currency}
           </p>
-          <p className="mt-5 text-gray-500 md:w-4/5">
-            {productData.description}
+          <p className="mt-5 text-gray-500 md:w-4/5 mb-10">
+            <i>{productData.description}</i>
           </p>
 
           {/* Hiển thị nút hoặc thông báo "Hết hàng" */}
@@ -96,22 +96,6 @@ const Product = () => {
             <p>Đảm bảo chất lượng, trải nghiệm cho khách hàng</p>
             <p>Chill and Relax</p>
           </div>
-        </div>
-      </div>
-
-      {/* -------------------- PRODUCT INFO -------------------- */}
-
-      <div className="mt-20">
-        <div className="flex">
-          <b className="border px-5 py-3 text-sm">Chi tiết sản phẩm</b>
-        </div>
-        <div className="flex flex-col gap-4 border px-6 py-6 text-sm text-gray-600">
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti
-            molestias deserunt dicta ipsa, a architecto fuga molestiae
-            voluptates at nulla necessitatibus dolore nihil veniam natus impedit
-            harum blanditiis quo officia!
-          </p>
         </div>
       </div>
 

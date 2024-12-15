@@ -1,18 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Danfo&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Varela+Round&display=swap");
 
-a.active hr{
-    display: block
+body {
+  font-family: "Varela Round", sans-serif;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+a.active hr {
+  display: block;
 }
 
-::-webkit-scrollbar{
-    display: none;
+::-webkit-scrollbar {
+  display: none;
 }
 
-@media (max-width:640px) {
-    a.active{
-        background-color: black;
-        color: white;
-    }
+@media (max-width: 640px) {
+  a.active {
+    background-color: black;
+    color: white;
+  }
+}
+
+@keyframes marquee-animation {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
+
+.marquee-animation {
+  animation: marquee-animation 30s linear infinite;
 }

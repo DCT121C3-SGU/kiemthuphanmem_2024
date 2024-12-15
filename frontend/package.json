@@ -10,6 +10,8 @@
     "react-router-dom": "^6.26.2",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.5",
+    "react-vanilla-tilt": "^1.0.0",
+    "vanilla-tilt": "^1.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

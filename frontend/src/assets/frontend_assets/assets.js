@@ -79,6 +79,7 @@ import room_icon from './room.png'
 import banner from './banner.jpg'
 import banner_event  from './banner_event.png'
 import order_icon from './order_icon.png'
+import loader_icon from './loader.gif'
 
 export const assets = {
     logo,
@@ -104,7 +105,8 @@ export const assets = {
     visa_icon,
     room_icon,
     banner_event,
-    order_icon
+    order_icon,
+    loader_icon
 }
 
 export const products = [

@@ -13,7 +13,7 @@ const Menu = () => {
     
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1)
-    const [productsPerPage, setProductsPerPage] = useState(6) // amount products per pages
+    const [productsPerPage, setProductsPerPage] = useState(8) // amount products per pages
 
     const toggleCategory = (e) => {
         if (category.includes(e.target.value)) {
@@ -109,7 +109,7 @@ const Menu = () => {
                     </select>
                 </div>
                 {/* MAP PRODUCT */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {currentProducts.map((item, index) => (
                         <ProductItem key={index} id={item._id} image={item.images} name={item.name} price={item.price} />
                     ))}
@@ -122,17 +122,17 @@ const Menu = () => {
                         disabled={currentPage === 1}
                         className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
                     >
-                        Previous
+                        Trước
                     </button>
                     <span className="text-sm">
-                        Page {currentPage} of {totalPages}
+                        Trang {currentPage} trong {totalPages}
                     </span>
                     <button 
                         onClick={nextPage} 
                         disabled={currentPage === totalPages}
                         className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
                     >
-                        Next
+                        Sau
                     </button>
                 </div>
             </div>
