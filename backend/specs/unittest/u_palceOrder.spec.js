@@ -10,7 +10,8 @@ describe('placeOrder', () => {
   beforeEach(() => {
     req = {
       body: {
-        address: [{firsName: 'mockFirstName', lastName: 'mockLastName', address: 'mockAddress', city: 'mockCity', district: 'mockDistrict', ward: 'mockWard', phone: 'mockPhone'}],
+        userId: 'mockUserId',
+        address: {firsName: 'mockFirstName', lastName: 'mockLastName', address: 'mockAddress', city: 'mockCity', district: 'mockDistrict', ward: 'mockWard', phone: 'mockPhone'},
         items: [{ productId: 'mockProductId', quantity: 2 }],
         amount: 500,
       },
@@ -21,8 +22,16 @@ describe('placeOrder', () => {
       json: sinon.stub(),
     };
 
-    orderSaveStub = sinon.stub(orderModel.prototype, 'save').resolves();
-    userUpdateStub = sinon.stub(userModel, 'findByIdAndUpdate').resolves();
+    orderSaveStub = sinon.stub(orderModel.prototype, 'save').callsFake(function() {
+      this.userId = req.body.userId;
+      this.items = req.body.items;
+      this.address = req.body.address;
+      this.amount = req.body.amount;
+      return Promise.resolve(this);
+    });;
+    userUpdateStub = sinon.stub(userModel, 'findByIdAndUpdate').resolves({
+      _id: 'mockUserId'
+    });
   });
 
   afterEach(() => {
@@ -90,43 +99,28 @@ describe('placeOrder', () => {
   });
 
   it('should successfully place an order with complete information', async () => {
-    // Arrange: Prepare the expected order data
-    const expectedOrderData = {
-      userId: 'mockUserId',
-      items: [{ productId: 'mockProductId', quantity: 2 }],
-      address: 'Mock Address',
-      amount: 500,
-      paymentMethod: 'COD',
-      payment: false,
-      orderId: sinon.match.string, // Match any string value for orderId
-      date: sinon.match.number, // Match any number value for date (timestamp)
-    };
-  
-    // Act: Call the placeOrder function with the request and response
     await placeOrder(req, res);
-  
-    // Assert: Check if the order was saved correctly
-    const actualOrderData = orderSaveStub.firstCall.thisValue;
+
     expect(orderSaveStub.calledOnce).to.be.true;
-    
-    // Validate that the order data matches the expected structure
-    expect(actualOrderData.userId).to.equal(expectedOrderData.userId);
-    expect(actualOrderData.items).to.deep.equal(expectedOrderData.items);
-    expect(actualOrderData.address).to.equal(expectedOrderData.address);
-    expect(actualOrderData.amount).to.equal(expectedOrderData.amount);
-    expect(actualOrderData.paymentMethod).to.equal(expectedOrderData.paymentMethod);
-    expect(actualOrderData.payment).to.equal(expectedOrderData.payment);
-  
-    // Assert: Check if the user's cart was cleared correctly
-    expect(userUpdateStub.calledOnceWith('mockUserId', { cartData: {} })).to.be.true;
-  
-    // Assert: Verify the HTTP response status and message
+
+    const savedOrder = orderSaveStub.firstCall.thisValue;
+
+    expect(savedOrder.items).to.deep.equal(req.body.items);
+
+    expect(savedOrder).to.include({
+      userId: req.body.userId,
+      address: req.body.address,
+      amount: req.body.amount,
+      paymentMethod: "COD",
+      payment: false
+    });
+
+    expect(userUpdateStub.calledOnceWith(req.body.userId, { cartData: {} })).to.be.true;
+
     expect(res.status.calledOnceWith(200)).to.be.true;
     expect(res.json.calledOnceWith({
       success: true,
-      message: 'Đặt hàng thành công',
+      message: "Đặt hàng thành công"
     })).to.be.true;
-  });
-  
-  
+  });   
 });

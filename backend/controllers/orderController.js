@@ -39,8 +39,8 @@ const placeOrder = async (req, res) => {
       orderId: "COD" + new Date().getTime(),
       date: Date.now(),
     };
-    // const newOrder = new orderModel(orderData);
-    // await newOrder.save();
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
     res.status(200).json({ success: true, message: "Đặt hàng thành công" });
   } catch (error) {
