@@ -44,6 +44,7 @@ const Orders = () => {
         {},
         { headers: { token } }
       );
+      console.log("response", response);
       if (response.data.success) {
         setBooking(response.data.bookings);
       }

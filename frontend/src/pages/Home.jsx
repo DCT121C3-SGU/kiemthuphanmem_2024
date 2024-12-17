@@ -17,7 +17,7 @@ function Home() {
         <div>
             {loading ? <Loader /> : (
                 <>
-                    <Hero />
+                    {/* <Hero /> */}
                     <LatestCollection />
                 </>
             )}

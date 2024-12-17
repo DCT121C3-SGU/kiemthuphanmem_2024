@@ -66,11 +66,15 @@ const listRoom = async (req, res) => {
 const bookingRoom = async(req, res) => {
     try {
         const {userId, roomId, slotDate, slotTime} = req.body
+        console.log(req.body);
         const roomData = await roomModel.findById(roomId)
         if (!roomData.room_status) {
             return res.json({success:false, message:"Phòng không tồn tại"})
         }
         let room_booked = roomData.room_booked
+        if (!slotDate || !slotTime) {
+            return res.json({success:false, message:"Vui lòng chọn thời gian đặt phòng"})
+        }
         if(room_booked[slotDate]){
             if(room_booked[slotDate].includes(slotTime)) {
                 return res.json({success:false, message:"Phòng đã được đặt vào thời gian này"})
